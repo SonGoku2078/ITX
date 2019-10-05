@@ -8,19 +8,13 @@
 #----------------------------------------------------------------------------------------------------------------------
 $reportServerUri = 'https://sv-rc-310.rega.local/Reportserver'
 $ReportPortalUri = 'https://sv-rc-310.rega.local/Reports'
-$Folder1         = 'TestFolder1'
-$Folder1         = 'TestFolder2'
-
-$ErrorAction     = "Continue"
+$Folder1         = 'DEV'
+$ErrorAction     = 'Continue'
+$ErrorMsgConsole = ' '
 
 
 #Schalter um Deployment je Folder festlegen zu können // 1= Ja, wird Deployed
 $Deployment_Folder1 = 1
-
-
-
-
-
 
 Write-Host 
  '# -------------------------------------------------------------------------------------------------------------------'
@@ -52,7 +46,8 @@ Try{
     ,''
 }
 Catch{
-    Write-Host 
+    $ErrorMsgConsole = 
+#    Write-Host 
      '# ---------------------------------------------------------------------------------------------------------------'
     ,'# Step 2 - ReportServer -  !!!! Verzeichnis schon vorhanden !!!! '
     ,'#'
@@ -68,6 +63,9 @@ Catch{
 #---------------------------------------------------------------------------------------------------------------------- 
 # Step 3 - Reports in Verzeichnis auf Portal raufladen
 #----------------------------------------------------------------------------------------------------------------------
+
+$ReportPath      = 'C:\Users\ser-haa\Downloads\SSRS_Portal_TEST' 
+Get-ChildItem $ReportPath -Recurse -Name -Directory # | #-include('*.xlsx','*.rdl','*.pbx')  
 
 IF($Deployment_Folder1 = 1) {
     Try{

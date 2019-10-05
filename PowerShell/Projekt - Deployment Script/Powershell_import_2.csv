@@ -1,0 +1,28 @@
+=IIF(
+	dateAdd(Dateinterval.Day, -1,
+			Dateserial(IIF(Parameters!ParMonat.Value = "Dezember"
+						  ,Parameters!ParJahr.Value + 1
+						  ,Parameters!ParJahr.Value
+						  )
+					  ,SWITCH(
+							Parameters!ParMonat.Value = "Januar" ,	 02,
+							Parameters!ParMonat.Value = "Februar",	 03,	
+							Parameters!ParMonat.Value = "März"	 ,	 04,
+							Parameters!ParMonat.Value = "April"  ,	 05,
+							Parameters!ParMonat.Value = "Mai"    ,	 06,
+							Parameters!ParMonat.Value = "Juni"   ,	 07,
+							Parameters!ParMonat.Value = "Juli"   ,	 08,
+							Parameters!ParMonat.Value = "August" ,	 09,
+							Parameters!ParMonat.Value = "September", 10,
+							Parameters!ParMonat.Value = "Oktober",	 11,
+							Parameters!ParMonat.Value = "November",	 12,
+							Parameters!ParMonat.Value = "Dezember",	 01
+							)
+					  ,01
+			)
+	)
+> CDate("2019-01-31")
+,False
+,True
+)
+
