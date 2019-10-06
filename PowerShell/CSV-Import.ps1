@@ -29,4 +29,4 @@ ForEach ($item in $MappingVerzeichnis)
     
 
 
-#Write-RsRestCatalogItem -Path 'C:\Users\ser-haa\Downloads\SSRS_Portal_TEST\DEV2\BEA Controlling\Offene_Posten.rdl' -RsFolder '/DEV2/BEA Controlling' -ReportPortalUri 'https://sv-rc-310.rega.local/Reports'
+Write-RsRestCatalogItem -Path 'C:\Temp\pbi.pbix' -RsFolder '/DEV99' -ReportPortalUri 'https://sv-rc-310.rega.local/Reports'

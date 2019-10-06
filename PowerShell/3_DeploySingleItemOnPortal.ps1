@@ -12,6 +12,11 @@ $PathInputCSV    = '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShe
 #Clear-Variable -Name MappingVerzeichnis
 #Clear-Variable -Name i1
 
+
+Write-RsRestCatalogItem -Path 'C:\Temp\pbi.pbix' -RsFolder '/DEV99' -ReportPortalUri 'https://sv-rc-310.rega.local/Reports'
+
+
+<#
 # csv importieren
 $MappingVerzeichnis = Import-Csv -Delimiter ';' -Encoding UTF8 -Path $PathInputCSV -ErrorAction  'Continue'
 $i1=0
@@ -33,4 +38,4 @@ ForEach ($item in $MappingVerzeichnis)
      Write-Output ""
     
     }
-    
+#>    
