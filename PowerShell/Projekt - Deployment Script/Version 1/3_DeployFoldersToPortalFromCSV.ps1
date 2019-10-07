@@ -38,7 +38,7 @@ ForEach ($item in $CsvDeployFolder)
         
             $i1++
             Write-RsRestFolderContent -Path  $SourceFolder -RsFolder $TargetFolder -ReportPortalUri $ReportPortalURI -Overwrite
-            Write-Output "${i1} - SoureOrdner : ${SourceFolder}                     TargetFolder : ${TargetFolder}      ReportPortalURI : |${ReportPortalURI}|"
+            Write-Output "${i1} - SoureOrdner : |${SourceFolder}|                     TargetFolder : |${TargetFolder}|      ReportPortalURI : |${ReportPortalURI}|"
         }
         
         catch {

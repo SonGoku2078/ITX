@@ -3,6 +3,7 @@
 # --------------
 # Diese Skript erstellt neue Ordner auf dem Portal, anhand der definitionen aus dem XLS- bzw. CSV-File
 # Existierende Ordner werden NICHT überschrieben, sondern einfach ignoriert.
+
 # Statische Variablen
 $CsvConfigPath        = '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShell\Projekt - Deployment Script\Version 1\Config.csv'
 $CsvPortalFoldersPath = '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShell\Projekt - Deployment Script\Version 1\PortalOrdner.csv'
