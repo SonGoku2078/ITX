@@ -6,6 +6,7 @@
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
+
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '978,695'
 $Form.text                       = "Form"
@@ -57,14 +58,8 @@ $btDeploySingleReportFile        = New-Object system.Windows.Forms.Button
 $btDeploySingleReportFile.text   = "Deploy File"
 $btDeploySingleReportFile.width  = 136
 $btDeploySingleReportFile.height  = 30
-$btDeploySingleReportFile.location  = New-Object System.Drawing.Point(465,26)
+$btDeploySingleReportFile.location  = New-Object System.Drawing.Point(467,25)
 $btDeploySingleReportFile.Font   = 'Microsoft Sans Serif,10'
-
-$lbSingleReportDeployment        = New-Object system.Windows.Forms.ListBox
-$lbSingleReportDeployment.text   = "SingleReportDeployment"
-$lbSingleReportDeployment.width  = 213
-$lbSingleReportDeployment.height  = 30
-$lbSingleReportDeployment.location  = New-Object System.Drawing.Point(204,26)
 
 $gbDeployFolder                  = New-Object system.Windows.Forms.Groupbox
 $gbDeployFolder.height           = 83
@@ -92,51 +87,44 @@ $cbListofPortalFoldersCsv.height  = 38
 $cbListofPortalFoldersCsv.location  = New-Object System.Drawing.Point(195,26)
 $cbListofPortalFoldersCsv.Font   = 'Microsoft Sans Serif,10'
 # AHA
-$cbListofPortalFoldersCsvTemp = $ListOfPortalFoldersCsv | select-object  RSFolder -unique
+$cbListofPortalFoldersCsvTemp = $Global:ListOfPortalFoldersCsv | select-object  RSFolder -unique
 $cbListofPortalFoldersCsv.DataSource =[system.Collections.ArrayList]$cbListofPortalFoldersCsvTemp
+
 $cbListofPortalFoldersCsv.DisplayMember= 'RSFolder'
+<#
+$cbListofPortalFoldersCsv.Add_click({
+    foreach($item in $cbListofPortalFoldersCsv.SelectedItems)
+    { 
+       $Data = $Item.text
+       Write-Host "@_999 Ausgewähltes Verzeichnis =  |$Data|"
+    }
+})
+#>
 # AHA
 
-$Form.controls.AddRange(@($gbSingleReport,$gbDeployFolder,$gbCreateFoldersOnPortal,$cbListofPortalFoldersCsv))
+$Form.controls.AddRange(@($gbSingleReport,$gbDeployFolder,$gbCreateFoldersOnPortal))
 $gbCreateFoldersOnPortal.controls.AddRange(@($btCreateDirectoryOnServer,$btChooseCsv,$tbPathToCsvFile))
 $gbDeployFolder.controls.AddRange(@($btDeployReportFolder,$btChooseReportFolder))
-$gbSingleReport.controls.AddRange(@($btChooseReportFile,$btDeploySingleReportFile,$lbSingleReportDeployment))
+$gbSingleReport.controls.AddRange(@($btChooseReportFile,$btDeploySingleReportFile,$cbListofPortalFoldersCsv))
 
 $btCreateDirectoryOnServer.Add_Click({ createDirectoryFromCsv })
 $btChooseCsv.Add_Click({ chooseDirectoryFile })
 $btChooseReportFile.Add_Click({ chooseSingleReportFile })
 $btDeploySingleReportFile.Add_Click({ deploySingleReportFile })
+$cbListofPortalFoldersCsv.Add_Click({  })
+
 
 function deploySingleReportFile { 
 #
 # Beschreibung :
 # --------------
-# FileBrowserDialogbox um genau ein (1) ReportingFile zu selektieren
+# Ausgewählte File in selectierten PortalOrdner deployen.
 #
-
-    Add-Type -AssemblyName System.Windows.Forms
-    $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{
-        Multiselect = $false # Multiple files can be chosen
-    	Filter = 'BI-Files (*.rdl, *.pbix, *.xls*)|*.rdl;*.pbix;*.xls*' # Specified file types
-    }
-     
-    [void]$FileBrowser.ShowDialog()
-    
-    $file = $FileBrowser.FileName;
-    
-    If($FileBrowser.FileNames -like "*\*") {
-    
-    	# Do something 
-    	$FileBrowser.FileName #Lists selected files (optional)
-    	
-    }
-    
-    else {
-        Write-Host "Cancelled by user"
-    }
-    
-    #Write-Output $FileBrowser.FileName
-    
+    Write-Output "@ function deploySingleReportFile"
+    #Write-RsRestCatalogItem -Path 'C:\Temp\pbi.pbix' -RsFolder '/DEV99' -ReportPortalUri $ReportPortalUri -Overwrite
+    Write-Output "############################################"
+    #Write-Output $Temp
+    Write-Output "############################################"
 }
 
 function chooseSingleReportFile { 
@@ -205,8 +193,9 @@ function chooseDirectoryFile {
 #
 # Beschreibung :
 # --------------
-# FileBrowserDialogbox um genau ein (1) CSV-File zu selektieren, welches die zu erstellende OrdnerStruktur ernthalen sollte.
-#
+# Funktion besteht aus 2 Teilen:
+# 1.) "FileBrowserDialogbox" um genau ein (1) CSV-File zu selektieren, welches die zu erstellende OrdnerStruktur ernthalen sollte.
+# 2.) "Liste alle PortalOrdner" erstellen, für CheckBoxListe auf GUI
     
     Add-Type -AssemblyName System.Windows.Forms
     $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{
@@ -221,20 +210,19 @@ function chooseDirectoryFile {
     If($FileBrowser.FileNames -like "*\*") {
     
     	# Do something 
-    	$FileBrowser.FileName #Lists selected files (optional)
+    	$Global:CsvPath = $FileBrowser.FileName #Lists selected files (optional)
     	
     }
     
     else {
         Write-Host "Cancelled by user"
     }
-} #Funktion
+#----------------------------------------------------------------------------------------------------
+# 2.) Liste aller PortalOrdner erstellen
+$Global:ListOfPortalFoldersCsv = Import-Csv -Delimiter ';' -Encoding UTF8 -Path $Global:CsvPath -ErrorAction  'Continue'
 
-function setSourceDirectoryPath { 
-    #---------------------------------------------------------------------------------------------------------------------- 
-    # Step 3 - Reports in Verzeichnis auf Portal raufladen
-    #----------------------------------------------------------------------------------------------------------------------
-} #Funktion 
+write-output $Global:ListOfPortalFoldersCsv
+} #Funktion
 
 function deployReportsOnServer { 
     #---------------------------------------------------------------------------------------------------------------------- 
@@ -301,7 +289,7 @@ function createDirectoryOnServer {
     
     Try{
 
-        Get-ChildItem $ReportPath -Recurse -Directory -Name | 
+        Get-ChildItem $Global:CsvPath -Recurse -Directory -Name | 
         
         ForEach-Object {
         # Split the relative input path into leaf (directory name)
@@ -312,7 +300,7 @@ function createDirectoryOnServer {
         $SubFolderName = Split-Path -Leaf $_
     
             try{
-                New-RsFolder -ReportServerUri $ReportServerURI -Path $SubFolderParentPath -FolderName $SubFolderName 
+                New-RsFolder -ReportServerUri $Global:ReportServerUri -Path $SubFolderParentPath -FolderName $SubFolderName 
                 Write-Host "Created folder ${SubFolderParentPath}/${SubFolderName}"
             }
             catch {
@@ -356,5 +344,4 @@ $ReportPath      = 'C:\Users\ser-haa\Downloads\SSRS_Portal_TEST'
 $Global:ListOfPortalFoldersCsv
 $Global:cbListofPortalFoldersCsvTemp 
 $Global:ReportServerUri = 'https://sv-rc-310.rega.local/Reportserver'       
-
 [void]$Form.ShowDialog()
