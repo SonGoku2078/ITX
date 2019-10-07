@@ -9,8 +9,8 @@ $reportServerUri = 'https://sv-rc-310.rega.local/Reportserver'
 $ReportPortalUri = 'https://sv-rc-310.rega.local/Reports'
 
 # Variablen leeren
-Clear-Variable -Name MappingVerzeichnis
-Clear-Variable -Name i1
+# Clear-Variable -Name MappingVerzeichnis
+# Clear-Variable -Name i1
 
 # csv importieren
 $MappingVerzeichnis = Import-Csv -Delimiter ';' -Encoding UTF8 -Path '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShell\Projekt - Deployment Script\Powershell_import.csv' -ErrorAction  'Continue'
