@@ -1,13 +1,11 @@
 ﻿#
 # Beschreibung :
 # --------------
-# Diese Skript kopiert bestehende Berichte (*.pbi, *.xlsx, *.rdl) von einem (lokalen) Windows-Verzeichnis (Ordner) auf einen existierenden Portal Ordner
-# Alle Angeben zu Quell-Ordner und Ziel-Ordner, müssen das CSV erfasst wurden.
-# Existierende Reports werden einfach überschrieben bzw. ersetzt.
-
+# Diese Skript erstellt neue Ordner auf dem Portal, anhand der definitionen aus dem XLS- bzw. CSV-File
+# Existierende Ordner werden NICHT überschrieben, sondern einfach ignoriert.
 # Statische Variablen
 $CsvConfigPath        = '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShell\Projekt - Deployment Script\Version 1\Config.csv'
-$CsvDeployFoldersPath = '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShell\Projekt - Deployment Script\Version 1\DeployFolders.csv'
+$CsvPortalFoldersPath = '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShell\Projekt - Deployment Script\Version 1\PortalOrdner.csv'
 
 
 #-----------------------------------------------------------------------
@@ -18,36 +16,35 @@ $CsvConfig = Import-Csv -Delimiter ';' -Encoding UTF8 -Path $CsvConfigPath -Erro
 
 # Serveradresse aus Spalte lesen
 ForEach ($item in $CsvConfig) {   
-    $ReportPortalURI     = $item.Portal
+    $ReportServerURI     = $item.Server
 }
 
 
 #------------------------------------------------------------------------
 # Teile 2: Lokale Ordner Inhalte in Portal Ordner rein transportieren
 #
-$CsvDeployFolder = Import-Csv -Delimiter ';' -Encoding UTF8 -Path $CsvDeployFoldersPath -ErrorAction  'Continue'
-Write-Host "# CsvDeployFoldersPath = |${CsvDeployFoldersPath}|"
-Write-Host "# CsvDeployFolder      = |${CsvDeployFolder}|"
+$CsvPortalFolders = Import-Csv -Delimiter ';' -Encoding UTF8 -Path $CsvPortalFoldersPath -ErrorAction  'Continue'
+
 
 # importiertes cvs lesen, variablen zuweisen und neue Ordner auf Portal erstellen
 $i1=0
-ForEach ($item in $CsvDeployFolder)
+ForEach ($item in $CsvPortalFolders)
     {
-     $TargetFolder  = $item.TargetFolder
-     $SourceFolder  = $item.SourceFolder
+     $PortalPath  = $item.PortalPath
+     $NewFolder  = $item.NewFolder
     # Ordner auf Portal erstellen
         Try{
         
             $i1++
-            Write-RsRestFolderContent -Path  $SourceFolder -RsFolder $TargetFolder -ReportPortalUri $ReportPortalURI -Overwrite
-            Write-Output "${i1} - SoureOrdner : ${SourceFolder}                     TargetFolder : ${TargetFolder}      ReportPortalURI : |${ReportPortalURI}|"
+            New-RsFolder -ReportServerUri $ReportServerURI -RSFolder $PortalPath -FolderName $NewFolder -ErrorAction  'Continue' 
+            Write-Output "${i1} - SoureOrdner : ${PortalPath}                     TargetFolder : ${NewFolder}"      
         }
         
         catch {
             # Report the specific error that occurred, accessible via $_
             Write-Host " ------------------------------------------------------------------"
             Write-Host " An error occurred for : "
-            Write-Host "     ${i1} - Ornder : |${SourceFolder}| Verzeichnis: |${TargetFolder}|"
+            Write-Host "     ${i1} - Ornder : |${NewFolder}| Verzeichnis: |${Portalpath}|"
             Write-Host " ------------------------------------------------------------------"
         }
 
