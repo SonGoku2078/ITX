@@ -1,0 +1,1 @@
+Write-RsRestFolderContent -Path 'C:\Users\ser-haa\Downloads\SSRS_Portal_TEST\DEV\' -RsFolder '/' -ReportPortalUri 'https://sv-rc-310.rega.local/Reports'   -Overwrite

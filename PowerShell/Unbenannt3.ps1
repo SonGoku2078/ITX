@@ -1,0 +1,1 @@
+﻿Write-RsRestCatalogItem -Path 'C:\Temp\pbi.pbix' -RsFolder '/DEV99' -ReportPortalUri 'https://sv-rc-310.rega.local/Reports' -Overwrite
