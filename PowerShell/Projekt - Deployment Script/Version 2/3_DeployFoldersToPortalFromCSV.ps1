@@ -65,4 +65,37 @@ ForEach ($item in $CsvDeployFolder)
             ,"#Error#------------------$(Get-TimeStamp)------------------#Error#"
         }
 
+
+        # Read DataSource of existing Report 
+        Try{
+            
+            #save datasource configuration
+            $DatasourceVar = Get-RsRestItemDataSource -RsItem $TargetFolder -ReportPortalUri $ReportPortalUri 
+            #save ConnectionString for print (write-Host)
+            $DatasourceVarConnectionString = $DatasourceVar[0].ConnectionString
+            Write-Host 
+            "#Info#------------------$(Get-TimeStamp)-------------------#Info#"
+            ,"#Info# "
+            ,"#Info# Datasource ConnectionString BEFOR modification : " 
+            ,"#Info#  - ReportItem       = |${ReportItem}|"
+            ,"#Info#  - ConnectionString = |${DatasourceVarConnectionString}|"
+            ,"#Info# "
+            ,"#Info#------------------$(Get-TimeStamp)-------------------#Info#"
+        }
+        catch {
+            # Report the specific error that occurred, accessible via $_
+            $ErrorMsg = $Error[0]
+            Write-Host 
+            "#Error#------------------$(Get-TimeStamp)------------------#Error#"
+            ,"#Error#"  
+            ,"#Error# An error occurred for : "
+            ,"#Error#  - ReportItem       = |${ReportItem}|"
+            ,"#Error#  - ConnectionString = |${DatasourceVarConnectionString}|"
+            ,"#Error# "
+            ,'#Error# Fehlermeldung lautet wie folgt :'
+            ,"#Error#  - |${ErrorMsg}|"
+            ,"#Error#" 
+            ,"#Error#------------------$(Get-TimeStamp)------------------#Error#"
+        }
+
     }
