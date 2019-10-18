@@ -8,8 +8,9 @@
 function Get-TimeStamp {return "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)}
 
 # Statische Variablen
-$DataSourceConnectionUpdateString   = 'Data Source=sv-rc-310\MSSQLSERVER_TEST200;Initial Catalog=R4_RMC_Tabular_Cockpit_HAUI'
-$ReportItem                         = '/RMC-Cockpit_v3.1'
+$DataSourceConnectionUpdateString   = 'Data Source=sv-rc-310\MSSQLSERVER_TEST__50000;Initial Catalog=R4_RMC_Tabular_Cockpit_HAUI'
+# $ReportItem                         = '/RMC-Cockpit_v3.1'
+$ReportItem                         = '/DEV99/SUB_FOLDER 1/SUB_Folder 10/RMC-Cockpit_v3.5'
 $ReportPortalUri                    = 'https://sv-rc-310.rega.local/Reports'
 
 
