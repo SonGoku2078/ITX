@@ -1,8 +1,10 @@
 ﻿#
-# Beschreibung :
+# Description :
 # --------------
-# Diese Skript kopiert bestehende Berichte (*.pbi, *.xlsx, *.rdl) von einem (lokalen) Windows-Verzeichnis (Ordner) auf einen existierenden Portal Ordner
-# Existierende Reports werden einfach überschrieben, es erfolgt keine Fehlermeldung !
+# Datasouce for already created and deployed PowerBi Reports (*.pbix) will be changed.
+# The "Data Source =*" value inside of the connectionString will be replaced with a 
+# reverence value which will be provide via an CSV-File.
+# Therfore it will be possible to change the Data-Source for multiple reports in one run 
 
 # create Timestamp 
 function Get-TimeStamp {return "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)}
@@ -64,8 +66,8 @@ ForEach ($item in $CsvDeployFolder)
             catch {
                 # Report the specific error that occurred, accessible via $_
                 $ErrorMsg     = $Error[0]
-                Write-Host 
-                "#Error#------------------$(Get-TimeStamp)------------------#Error#"
+                Write-Output 
+                 "#Error#------------------$(Get-TimeStamp)------------------#Error#"
                 ,"#Error#"  
                 ,"#Error# An error occurred for : Get-RsRestItemDataSource "
                 ,"#Error#  - Path            = |${Path}|"
@@ -73,7 +75,7 @@ ForEach ($item in $CsvDeployFolder)
                 ,"#Error#  - ReportPortalURI = |${ReportPortalURI}|"
                 ,"#Error#  - Loop No.        = |${i4}|"
                 ,"#Error# "
-                ,'#Error# Fehlermeldung lautet wie folgt :'
+                ,'#Error# ErrorMesaage looks as follows :'
                 ,"#Error#  - |${ErrorMsg}|"
                 ,"#Error#" 
                 ,"#Error#------------------$(Get-TimeStamp)------------------#Error#" 
@@ -130,20 +132,20 @@ ForEach ($item in $CsvDeployFolder)
                 $ModifiedDate = $DatasourceVar[0].ModifiedDate
                 
                 Write-Host 
-                "#Info#------------------$(Get-TimeStamp)-------------------#Info#"
+                 "#Info#------------------$(Get-TimeStamp)-------------------#Info#"
                 ,"#Info# "
                 ,"#Info# Datasource ConnectionString :"
-                ,"#Info# BEFOR modification : " 
-                ,"#Info# - ConnectionString : |${DsVarConnectionString_OLD}|"
+                ,"#Info# BEFOR modification :" 
+                ,"#Info# - ConnectionString = |${DsVarConnectionString_OLD}|"
                 ,"#Info# "
                 ,"#Info# AFTER modification : " 
-                ,"#Info# - ConnectionString : |${DsVarConnectionString}|"                
-                ,"#Info# - ReportItem       : |${path}|"
-                ,"#Info# - ReportName       : |${Name}|"
-                ,"#Info# - ReportTyp        : |${TypeName}|" 
-                ,"#Info# - modified by      : |${ModifiedBy}|"
-                ,"#Info# - modified Date    : |${ModifiedDate}|"
-                ,"#Info# - Loop No.         : |${i4}|"
+                ,"#Info# - ConnectionString = |${DsVarConnectionString}|"                
+                ,"#Info# - ReportItem       = |${path}|"
+                ,"#Info# - ReportName       = |${Name}|"
+                ,"#Info# - ReportTyp        = |${TypeName}|" 
+                ,"#Info# - modified by      = |${ModifiedBy}|"
+                ,"#Info# - modified Date    = |${ModifiedDate}|"
+                ,"#Info# - Loop No.         = |${i4}|"
                 ,"#Info# "
                 ,"#Info#------------------$(Get-TimeStamp)-------------------#Info#"
             } #End Try
@@ -151,13 +153,13 @@ ForEach ($item in $CsvDeployFolder)
             catch {
             # Report the specific error that occurred, accessible via $_
                 $ErrorMsg     = $Error[0]
-                Write-Host 
+                Write-Host                 
                 "#Error#------------------$(Get-TimeStamp)------------------#Error#"
                 ,"#Error#"  
                 ,"#Error# An error occurred for : "
                 ,"#Error#  - ReportItem       = |${ReportItem}|"
-                ,"#Error#  - ReportName       : |${Name}|"
-                ,"#Error#  - ReportTyp        : |${TypeName}|" 
+                ,"#Error#  - ReportName       = |${Name}|"
+                ,"#Error#  - ReportTyp        = |${TypeName}|" 
                 ,"#Error#  - ConnectionString = |${DsVarConnectionString}|"
                 ,"#Error#  - Path             = |${Path}|"
                 ,"#Error#  - ReportPortalURI  = |${ReportPortalURI}|"
