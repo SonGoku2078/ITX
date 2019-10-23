@@ -53,20 +53,13 @@ ForEach ($item in $CsvDeployFolder)
         $TypeName  = $item.TypeName
         $Path       = $item.Path
         
-        Write-Output "# Info 5  # - ForEach #${i4} |${Path}|${Name}|${TypeName}" 
-
         # 6. Datasource can only be changed for PBIX, therefore ItemType gets filtered
         IF($TypeName -eq "PowerBIReport") 
-        {
-            Write-Output "# Info 6 #  - ${i4} |${Path}|${Name}|${TypeName}" 
-            
+        {           
             # 7. save existing "datasource connection string" configuration of PBI-Report (per Item)
             try {
                 #$DatasourceVar = $null
                 $DatasourceVar = Get-RsRestItemDataSource -RsItem $Path -ReportPortalUri $ReportPortalURI
-                $temp1 =  $DatasourceVar[0]
-                Write-Output "# Info 7 # - DatasourceVar[0] : |${temp1}|" 
-                #$DSvarConString = $DatasourceVar[0].ConnectionString
             }
             catch {
                 # Report the specific error that occurred, accessible via $_
@@ -78,7 +71,7 @@ ForEach ($item in $CsvDeployFolder)
                 ,"#Error#  - Path            = |${Path}|"
                 ,"#Error#  - DataSourceVar   = |${DatasourceVar}|"
                 ,"#Error#  - ReportPortalURI = |${ReportPortalURI}|"
-                ,"#Error#  - ${i4}"
+                ,"#Error#  - Loop No.        = |${i4}|"
                 ,"#Error# "
                 ,'#Error# Fehlermeldung lautet wie folgt :'
                 ,"#Error#  - |${ErrorMsg}|"
@@ -122,9 +115,12 @@ ForEach ($item in $CsvDeployFolder)
             
             # 9. Compile "New" Connection-String
             #    Tabular-Model hasn't changed, only ServerAdress is replaced with the one from CSV 
+            
+            $DsVarConnectionString_OLD = $DatasourceVar[0].ConnectionString # only needed for 'Write-Output' below
 
             $DatasourceVar[0].ConnectionString = "Data Source=$EnvServer;$DSvarTabModelName"
-            $DsVarConnectionString = $DatasourceVar[0].ConnectionString # only needed for 'Write-Output' below
+            $DsVarConnectionString = $DatasourceVar[0].ConnectionString     # only needed for 'Write-Output' below
+
             Try{   
                 # 11. Update PBI-Report on Report-Server-Portal with new DataSource-Connection 
                 Set-RsRestItemDataSource -RsItem $path -ReportPortalUri $ReportPortalUri -RsItemType 'PowerBIReport' -DataSources $DatasourceVar[0]
@@ -136,12 +132,18 @@ ForEach ($item in $CsvDeployFolder)
                 Write-Host 
                 "#Info#------------------$(Get-TimeStamp)-------------------#Info#"
                 ,"#Info# "
-                ,"#Info# Datasource ConnectionString AFTER modification : " 
-                ,"#Info# ReportItem       : |${path}|"
-                ,"#Info# ConnectionString : |${DsVarConnectionString}|"
-                ,"#Info# modified by      : |${ModifiedBy}|"
-                ,"#Info# modified Date    : |${ModifiedDate}|"
-                ,"#Info#  - ${i4}"
+                ,"#Info# Datasource ConnectionString :"
+                ,"#Info# BEFOR modification : " 
+                ,"#Info# - ConnectionString : |${DsVarConnectionString_OLD}|"
+                ,"#Info# "
+                ,"#Info# AFTER modification : " 
+                ,"#Info# - ConnectionString : |${DsVarConnectionString}|"                
+                ,"#Info# - ReportItem       : |${path}|"
+                ,"#Info# - ReportName       : |${Name}|"
+                ,"#Info# - ReportTyp        : |${TypeName}|" 
+                ,"#Info# - modified by      : |${ModifiedBy}|"
+                ,"#Info# - modified Date    : |${ModifiedDate}|"
+                ,"#Info# - Loop No.         : |${i4}|"
                 ,"#Info# "
                 ,"#Info#------------------$(Get-TimeStamp)-------------------#Info#"
             } #End Try
@@ -154,10 +156,12 @@ ForEach ($item in $CsvDeployFolder)
                 ,"#Error#"  
                 ,"#Error# An error occurred for : "
                 ,"#Error#  - ReportItem       = |${ReportItem}|"
+                ,"#Error#  - ReportName       : |${Name}|"
+                ,"#Error#  - ReportTyp        : |${TypeName}|" 
                 ,"#Error#  - ConnectionString = |${DsVarConnectionString}|"
                 ,"#Error#  - Path             = |${Path}|"
                 ,"#Error#  - ReportPortalURI  = |${ReportPortalURI}|"
-                ,"#Info#  - ${i4}"
+                ,"#Error#  - Loop No.         = |${i4}|"
                 ,"#Error# "
                 ,'#Error# ErrorMesaage looks as follows :'
                 ,"#Error#  - |${ErrorMsg}|"
