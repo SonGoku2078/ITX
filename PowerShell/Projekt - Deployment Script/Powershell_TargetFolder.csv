@@ -1,3 +1,0 @@
-	IF([FACT_EINSATZ.Alarmdatumzeit] <=[#"FACT_EINSATZ.Alarmdatumzeit 07:30:00"] &[FACT_EINSATZ.Alarmdatumzeit] > [#"FACT_EINSATZ.Alarmdatumzeit 07:30:00 Vortag"]
-	,datediff([FACT_EINSATZ.Alarmdatumzeit],-1,day),[FACT_EINSATZ.Alarmdatumzeit]
-	)
