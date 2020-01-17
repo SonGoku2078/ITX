@@ -6,6 +6,8 @@
 # 
 # 
 
+$PSVersionTable
+
 # Abfrage tut noch nicht richtig!!
 
 # Check Powershell execution right
