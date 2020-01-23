@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="DSet_Par_Jahr_Auswahl_MDS">
+    <Query>
+      <DataSourceReference>DS_MDS</DataSourceReference>
+      <CommandText>
+          SELECT distinct
+          CAST(LEFT (mdm.Freigabe_Finanzdaten.Name,4) as INT) as Jahr
+          FROM
+          mdm.Freigabe_Finanzdaten
+          WHERE
+          mdm.Freigabe_Finanzdaten.Freigegeben_Name = N'Ja'
+          Order by Jahr Desc
+        </CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Jahr">
+        <DataField>Jahr</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

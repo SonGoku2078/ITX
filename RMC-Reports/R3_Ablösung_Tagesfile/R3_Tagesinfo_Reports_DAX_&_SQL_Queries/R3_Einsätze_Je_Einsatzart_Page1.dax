@@ -1,0 +1,101 @@
+﻿// Changes
+// --------
+// 13.08.2019 - Anzahl Einsätze und Flugdauer von "durchgeführt" auf "Total" umgestellt
+//
+// 05.07.2018 - Variabeln eingebaut und einige Kennzahlen angepasst 
+//
+// 27.06.2019 - Ersterstellung
+// 
+
+
+
+
+DEFINE
+
+VAR
+	FILTER_MaterialNo 	= FILTER 	(
+						        	VALUES ( 'Material'[Materialcode] ),	        	
+						        	// Helikopter
+						        	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+						        	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+						        	('Material'[Materialcode] = "64" ) || ('Material'[Materialcode] = "65" ) ||
+						        	('Material'[Materialcode] = "66" ) || ('Material'[Materialcode] = "67" ) ||
+						        	('Material'[Materialcode] = "69" ) 
+						        	)
+						       
+VAR
+	FILTER_Basen		= FILTER 	('Basis',
+									('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "AGLL") ||
+									('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "AGLS") ||
+									('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "EBGE") ||
+									('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "HBES") ||
+							    	('Basis'[Basistyp] 	= "EB16/17") 		||
+									('Basis'[Basistyp] 	= "Mittelland") 	||
+									('Basis'[Basistyp] 	= "Heli Rega H125") ||					
+									('Basis'[Basistyp] 	= "Heli Rega IREOS")||					
+									('Basis'[Basistyp] 	= "Gebirgsbasis")
+							    	)
+
+VAR
+	FILTER_EinsatzArt	= FILTER 	(VALUES ( 'Einsatzart'[Einsatzart] ),
+									(
+									('Einsatzart'[Einsatzart] =  "Primäreinsätze" 		) 	|| 
+									('Einsatzart'[Einsatzart] =  "Sekundäreinsätze" 	)	||
+									('Einsatzart'[Einsatzart] =  "Spezielle Einsätze" 	)			        		
+									)
+									)
+
+vAR 
+	Var_FlugdauerTotal 	= CALCULATE([Flugdauer in min. Total]
+							,FILTER	(DISTINCT(Einsatzdatum[CAL_DATE])
+							 		 ,Einsatzdatum[CAL_DATE] = @Par_Einsatzdatum
+								  	)
+							,FILTER_EinsatzArt
+						    ,FILTER_Basen
+						    ,FILTER_MaterialNo
+						    )
+						       
+VAR 
+	Var_FlugdauerTotalHHMM = CALCULATE(
+							 IF(ISBLANK(Var_FlugdauerTotal),BLANK(),CONCATENATE(CONCATENATE(ROUNDDOWN(Var_FlugdauerTotal/60,0),":"),IF(LEN(MOD(Var_FlugdauerTotal,60))=1,CONCATENATE("0",MOD(Var_FlugdauerTotal,60)),MOD(Var_FlugdauerTotal,60))))
+							,FILTER	(DISTINCT(Einsatzdatum[CAL_DATE])
+							 		 ,Einsatzdatum[CAL_DATE] = @Par_Einsatzdatum
+								  	)
+							,FILTER_EinsatzArt
+						    ,FILTER_Basen
+						    ,FILTER_MaterialNo
+						    )
+
+
+EVALUATE
+
+ADDCOLUMNS(
+	SUMMARIZECOLUMNS (
+	    'Basis'[Basistyp],
+	    'Basis'[Basis],
+	    'Einsatzart'[Einsatzart]
+	    ,FILTER	(DISTINCT(Einsatzdatum[CAL_DATE])
+		 		 ,Einsatzdatum[CAL_DATE] = @Par_Einsatzdatum
+			  	)
+		,FILTER_EinsatzArt
+	    ,FILTER_Basen
+	    ,FILTER_MaterialNo
+		,
+	
+	    "Anzahl Einsätze Total"			, [Anzahl Einsätze Total],
+	    "Anzahl Nachteinsätze Total"	, [Anzahl Nachteinsätze Total],
+	    "Anzahl Einsätze abgebrochen"	, [Anzahl Einsätze abgebrochen],
+	    "Flugdauer in HH:MM"			, [Flugdauer in HH:MM]
+
+	)
+, "FlugdauerTotal HHMM"						, Var_FlugdauerTotalHHMM
+
+)
+
+ORDER BY [Einsatzart]
+
+<Parameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-microsoft-com:xml-analysis">  <Parameter>
+    <Name>Par_Einsatzdatum</Name>
+    <Value xsi:type="xsd: string">2019-07-30</Value>
+  </Parameter>
+</Parameters>

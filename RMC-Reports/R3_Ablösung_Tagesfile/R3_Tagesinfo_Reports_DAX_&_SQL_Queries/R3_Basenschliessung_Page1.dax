@@ -1,0 +1,32 @@
+﻿// Changes
+// --------
+// 15.08.2019 - Ersterstellung
+//
+
+
+
+DEFINE
+
+Var 
+	Filter_Schliessungsdatum = FILTER(DISTINCT(Basenschliessungsdatum),Basenschliessungsdatum[CAL_DATE] = @Par_Schliessungsdatum)
+
+
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Schliessungsgrund'[Schliessungsgrund],
+	'Basis'[Basis],
+    'Basenschliessungszeit'[Schliessungszeit],
+	 Filter_Schliessungsdatum
+    ,"Anzahl Basenschliessungen", [Anzahl Basenschliessungen]
+//   ,"Anzahl Basenschliessungen - YTD", [Anzahl Basenschliessungen - YTD]
+
+)
+
+
+//2015-12-21
+//2019-03-14
+<Parameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-microsoft-com:xml-analysis">  <Parameter>
+    <Name>Par_Schliessungsdatum</Name>
+    <Value xsi:type="xsd: string">2019-03-14</Value>
+  </Parameter>
+</Parameters>

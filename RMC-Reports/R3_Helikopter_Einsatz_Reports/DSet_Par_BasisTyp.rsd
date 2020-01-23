@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="DSet_Par_BasisTyp">
+    <Query>
+      <DataSourceReference>DS_TABULAR</DataSourceReference>
+      <CommandText>// Changes
+// --------
+// 07.11.2018 - Erst Erstellung
+//
+
+
+// Purpose
+// -------
+// Alle Basen und BasenTypen sollen gelistet werden, um als Parameter-Liste zu dienen.
+// Mögliche Reportspezifische Basen/BasenTypen, können auf dem Level vom Shared-Datset rausgefilter werden.
+
+
+
+EVALUATE 
+
+
+SUMMARIZECOLUMNS(
+Basis[Basistyp]
+,FILTER (Basis,
+    	(Basis[Basis] 	= "EBGE" &amp;&amp; Basis[Basistyp] = "Partner") ||
+    	(Basis[Basis] 	= "AGLL" &amp;&amp; Basis[Basistyp] = "Partner") ||
+    	(Basis[Basis] 	= "AGLS" &amp;&amp; Basis[Basistyp] = "Partner") ||
+    	(Basis[Basis] 	= "HBES" &amp;&amp; Basis[Basistyp] = "Partner") ||
+		(Basis[Basistyp] 	= "Mittelland") 	||
+		(Basis[Basistyp] 	= "Gebirgsbasis")
+    	)
+)</CommandText>
+      <rd:DesignerState>
+        <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+          <CommandType>DAX</CommandType>
+          <Type>Query</Type>
+          <QuerySpecification xsi:type="MDXQuerySpecification">
+            <Select>
+              <Items>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Basis</DimensionName>
+                    <HierarchyName>Basistyp</HierarchyName>
+                    <HierarchyUniqueName>[Basis].[Basistyp]</HierarchyUniqueName>
+                    <LevelName>Basistyp</LevelName>
+                    <UniqueName>[Basis].[Basistyp].[Basistyp]</UniqueName>
+                  </ID>
+                  <ItemCaption>Basistyp</ItemCaption>
+                </Item>
+              </Items>
+            </Select>
+            <AutoExecute>false</AutoExecute>
+            <From>RMC-Tabular</From>
+            <Filter>
+              <FilterItems />
+            </Filter>
+            <Calculations />
+            <Aggregates />
+            <QueryProperties />
+          </QuerySpecification>
+          <Query>
+            <Statement>// Changes
+// --------
+// 07.11.2018 - Erst Erstellung
+//
+
+
+// Purpose
+// -------
+// Alle Basen und BasenTypen sollen gelistet werden, um als Parameter-Liste zu dienen.
+// Mögliche Reportspezifische Basen/BasenTypen, können auf dem Level vom Shared-Datset rausgefilter werden.
+
+
+
+EVALUATE 
+SUMMARIZECOLUMNS(
+Basis[Basistyp]
+//,FILTER (Basis,
+//    	(Basis[Basis] 	= "EBGE" &amp;&amp; Basis[Basistyp] = "Partner") ||
+//    	(Basis[Basis] 	= "AGLL" &amp;&amp; Basis[Basistyp] = "Partner") ||
+//    	(Basis[Basis] 	= "AGLS" &amp;&amp; Basis[Basistyp] = "Partner") ||
+//    	(Basis[Basis] 	= "HBES" &amp;&amp; Basis[Basistyp] = "Partner") ||
+//    	(Basis[Basistyp] 	= "EB16/17") 		||
+//		(Basis[Basistyp] 	= "Mittelland") 	||
+//		(Basis[Basistyp] 	= "Gebirgsbasis")
+//    	)
+)</Statement>
+            <ParameterDefinitions />
+          </Query>
+        </QueryDefinition>
+      </rd:DesignerState>
+    </Query>
+    <Fields>
+      <Field Name="Basistyp">
+        <DataField>Basis[Basistyp]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="ReportingServerDB">
+  <ConnectionProperties>
+    <Extension>SQL</Extension>
+    <ConnectString>Data Source=sv-rc-310.rega.local\MSSQLSERVER_DEV;Initial Catalog=ReportServer$MSSQLSERVER_DEV</ConnectString>
+    <IntegratedSecurity>true</IntegratedSecurity>
+  </ConnectionProperties>
+  <DataSourceID>fcbaf255-5889-4685-896f-87077b58e764</DataSourceID>
+</RptDataSource>
