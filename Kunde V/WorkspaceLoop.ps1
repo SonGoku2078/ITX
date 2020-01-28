@@ -6,12 +6,13 @@ $username = "ahauenstein@it-logix.ch"
 $credential = New-Object System.Management.Automation.PSCredential($username, $password)
 
 Connect-PowerBIServiceAccount -Credential $credential
-$workspaces     = Get-PowerBIWorkspace -All 
+#Set-Format  -Name 'workspaces' -Option get-help Set-Format
+$workspaces     = Get-PowerBIWorkspace
 
-$workspacesJson = $workspaces | Select-Object name, user, id #| ConvertTo-Json 
-Write-Output $workspacesJson
+# $workspacesJson = $workspaces | Select-Object name, user, id #| ConvertTo-Json 
+# Write-Output $workspacesJson
 
-$workspacesJson | Select-Object -Property user.user
+$workspaces | Select-Object -Property user
 
 <#
 $workspaces | 
@@ -25,4 +26,4 @@ $workspaces |
         }
     }
     #>
-Write-Host "Workspaces: $($workspacesRoh)"
+Write-Host "Workspaces: $($workspaces)"

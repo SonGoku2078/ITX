@@ -1,15 +1,24 @@
 #Connect Service
-#Connect-PowerBIServiceAccount
+<#Connect-PowerBIServiceAccount
 
-$password = "xxxxx" | ConvertTo-SecureString -asPlainText -Force
-$username = "ahauenstein@it-logix.ch" 
-$credential = New-Object System.Management.Automation.PSCredential($username, $password)
-
-Connect-PowerBIServiceAccount #-Credential $credential
-$workspaces     = Get-PowerBIWorkspace -All 
+$workspaces     = Get-PowerBIWorkspace -All     
 
 $workspacesJson = $workspaces | Select-Object name, user, id #| ConvertTo-Json 
 Write-Output $workspacesJson # | Get-Member 
+#>
+
+
+Connect-PowerBIServiceAccount 
+
+$Workspace = Get-PowerBIWorkspace | Select-Object Name, ID | Format-Table
+
+forea
+
+$WorkspaceAndUser = $Workspace | ForEach-Object {
+                                    $WorkspaceID = $_.ID    
+
+                                }  
+
 
 #Get-Variable $workspacesJson #| Select *
 
@@ -25,4 +34,5 @@ $workspaces |
         }
     }
     #>
-#Write-Host "Workspaces: $($workspacesRoh)"
+Write-Host "Workspaces: $($Workspace)"
+Write-Host "Workspaces and User : $($WorkspaceAndUser)"
