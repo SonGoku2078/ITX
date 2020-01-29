@@ -1,4 +1,4 @@
-$password = "Wongfeihung4" | ConvertTo-SecureString -asPlainText -Force
+$password = "" | ConvertTo-SecureString -asPlainText -Force
 $username = "ahauenstein@it-logix.ch" 
 $credential = New-Object System.Management.Automation.PSCredential($username, $password)
 
