@@ -1,0 +1,53 @@
+﻿// Changes
+// --------
+// 13.08.2019 - Falschen Filter auf "normale Einsatzart" entfernt, da es hier um "statistische Einsätze" geht
+//
+// 05.07.2018 - Variabeln eingebaut und einige Kennzahlen angepasst 
+//
+// 27.06.2019 - Ersterstellung
+// 
+
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Basis'[Basistyp],
+    'EinsatzartStatistisch'[Einsatzart]
+	, FILTER(DISTINCT(Einsatzdatum[CAL_DATE])
+		 		 ,Einsatzdatum[CAL_DATE] = @Par_Einsatzdatum 
+			)
+	,FILTER (VALUES ( 'Einsatzart'[Einsatzart] ),
+			(
+			('Einsatzart'[Einsatzart] =  "Primäreinsätze" 		) 	|| 
+			('Einsatzart'[Einsatzart] =  "Sekundäreinsätze" 	)	||
+			('Einsatzart'[Einsatzart] =  "Spezielle Einsätze" 	)			        		
+			)
+			)
+    ,FILTER ('Basis',
+			('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "AGLL") ||
+			('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "AGLS") ||
+			('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "EBGE") ||
+			('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "HBES") ||
+	    	('Basis'[Basistyp] 	= "EB16/17") 		||
+			('Basis'[Basistyp] 	= "Mittelland") 	||
+			('Basis'[Basistyp] 	= "Heli Rega H125") ||					
+			('Basis'[Basistyp] 	= "Heli Rega IREOS")||					
+			('Basis'[Basistyp] 	= "Gebirgsbasis")
+	    	)
+    ,FILTER (
+        	VALUES ( 'Material'[Materialcode] ),	        	
+        	// Helikopter
+        	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+        	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+        	('Material'[Materialcode] = "64" ) || ('Material'[Materialcode] = "65" ) ||
+        	('Material'[Materialcode] = "66" ) || ('Material'[Materialcode] = "67" ) ||
+        	('Material'[Materialcode] = "69" ) 
+        	)
+	,"Anzahl Einsätze durchgeführt", [Anzahl Einsätze durchgeführt]
+)
+
+ORDER BY [Einsatzart]
+//
+<Parameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-microsoft-com:xml-analysis">  <Parameter>
+    <Name>Par_Einsatzdatum</Name>
+    <Value xsi:type="xsd: string">2019-07-30</Value>
+  </Parameter>
+</Parameters>

@@ -4,6 +4,9 @@
 # Diese Skript kopiert bestehende Berichte (*.pbi, *.xlsx, *.rdl) von einem (lokalen) Windows-Verzeichnis (Ordner) auf einen existierenden Portal Ordner
 # Existierende Reports werden einfach überschrieben, es erfolgt keine Fehlermeldung !
 
+# Timestamp aufbereiten
+function Get-TimeStamp {return "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)}
+
 # Statische Variablen
 $CsvConfigPath        = '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShell\Projekt - Deployment Script\Version 1\Config.csv'
 $CsvDeployFoldersPath = '\\rega.local\dfs\userdata\ser-haa\Documents\Git\ITX\PowerShell\Projekt - Deployment Script\Version 1\DeployFolders.csv'
@@ -32,21 +35,34 @@ $i1=0
 ForEach ($item in $CsvDeployFolder)
     {
      $TargetFolder  = $item.TargetFolder
-     $SourceFolder  = $item.SourceFolder
+     $SourceFolder  = $item.SourceFolder   
+    
     # Ordner auf Portal erstellen
         Try{
         
             $i1++
-            Write-RsRestFolderContent -Path  $SourceFolder -RsFolder $TargetFolder -ReportPortalUri $ReportPortalURI -Overwrite
-            Write-Output "${i1} - SoureOrdner : |${SourceFolder}|                     TargetFolder : |${TargetFolder}|      ReportPortalURI : |${ReportPortalURI}|"
+            Write-RsRestFolderContent -Path  $SourceFolder -RsFolder $TargetFolder -ReportPortalUri $ReportPortalURI -Overwrite 
+            Write-Host 
+             "#Info#------------------$(Get-TimeStamp)-------------------#Info#"
+            ,"#Info# "
+            ,"#Info# Folgende(r/s) Ordner/Verzeichnis(se) wurde erstellt : " 
+            ,"#Info#  - ${i1} - Ornder : |${SourceFolder}| Verzeichnis: |${TargetFolder}|"
+            ,"#Info# "
+            ,"#Info#------------------$(Get-TimeStamp)-------------------#Info#"
         }
         
         catch {
-            # Report the specific error that occurred, accessible via $_
-            Write-Host " ------------------------------------------------------------------"
-            Write-Host " An error occurred for : "
-            Write-Host "     ${i1} - Ornder : |${SourceFolder}| Verzeichnis: |${TargetFolder}|"
-            Write-Host " ------------------------------------------------------------------"
+            $ErrorMsg = $Error[0]
+            Write-Host 
+             "#Error#------------------$(Get-TimeStamp)------------------#Error#"
+            ,"#Error#"  
+            ,"#Error# An error occurred for : "
+            ,"#Error#  -  ${i1} - Ornder : |${SourceFolder}| Verzeichnis: |${TargetFolder}|"
+            ,"#Error# "
+            ,'#Error# Fehlermeldung lautet wie folgt :'
+            ,"#Error#  - |${ErrorMsg}|"
+            ,"#Error#" 
+            ,"#Error#------------------$(Get-TimeStamp)------------------#Error#"
         }
 
     }

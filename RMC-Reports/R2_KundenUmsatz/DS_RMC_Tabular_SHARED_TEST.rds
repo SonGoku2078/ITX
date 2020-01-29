@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="DS_RMC_Tabular_SHARED_TEST">
+  <ConnectionProperties>
+    <Extension>OLEDB-MD</Extension>
+    <ConnectString>Data Source=sv-rc-310.rega.local\MSSQLSERVER_TEST;Initial Catalog=RMC-Tabular</ConnectString>
+    <IntegratedSecurity>true</IntegratedSecurity>
+  </ConnectionProperties>
+  <DataSourceID>8c4a160a-1f81-41e7-bad3-4c892e8fd168</DataSourceID>
+</RptDataSource>

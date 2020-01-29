@@ -1,0 +1,118 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "R1_MIS", "MIS_2.0\R1_MIS.rptproj", "{2095A1BB-55E3-4519-BB7C-73B325FEDED9}"
+EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "R2_BEA Controlling", "BEA_Controlling\R2_BEA Controlling.rptproj", "{36E205AB-B200-4559-AD5D-48EEC7F56D54}"
+EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "R2_Umsatz_Assistance_Zentralen", "R2_Umsatz_Assistance_Zentralen\R2_Umsatz_Assistance_Zentralen.rptproj", "{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}"
+EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "R1_Bilanz_&_BetriebsRechnung", "R1_Bilanz_&_Betriebsrechnung\R1_Bilanz_&_BetriebsRechnung.rptproj", "{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}"
+EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "R2_Spitalbesuche_FactSheet", "R2_Spitalbesuche_FactSheet\R2_Spitalbesuche_FactSheet.rptproj", "{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}"
+EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "R3_Helikopter_Einsatz_Reports", "R3_Helikopter_Einsatz_Reports\R3_Helikopter_Einsatz_Reports.rptproj", "{C9C2851C-98FA-4748-922E-B2ED660457A6}"
+EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "R3_Ablösung_Tagesfile", "R3_Ablösung_Tagesfile\R3_Ablösung_Tagesfile.rptproj", "{489BC167-9680-4191-8841-B4B7E80C8FCE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		DEV_Solution_Config|Default = DEV_Solution_Config|Default
+		PROD_Solution_Config|Default = PROD_Solution_Config|Default
+		TEST_Solution_Config|Default = TEST_Solution_Config|Default
+		UAT_Solution_Config|Default = UAT_Solution_Config|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2095A1BB-55E3-4519-BB7C-73B325FEDED9}.DEV_Solution_Config|Default.ActiveCfg = DEV
+		{2095A1BB-55E3-4519-BB7C-73B325FEDED9}.DEV_Solution_Config|Default.Deploy.0 = DEV
+		{2095A1BB-55E3-4519-BB7C-73B325FEDED9}.PROD_Solution_Config|Default.ActiveCfg = PROD
+		{2095A1BB-55E3-4519-BB7C-73B325FEDED9}.PROD_Solution_Config|Default.Deploy.0 = PROD
+		{2095A1BB-55E3-4519-BB7C-73B325FEDED9}.TEST_Solution_Config|Default.ActiveCfg = TEST
+		{2095A1BB-55E3-4519-BB7C-73B325FEDED9}.TEST_Solution_Config|Default.Deploy.0 = TEST
+		{2095A1BB-55E3-4519-BB7C-73B325FEDED9}.UAT_Solution_Config|Default.ActiveCfg = UAT
+		{2095A1BB-55E3-4519-BB7C-73B325FEDED9}.UAT_Solution_Config|Default.Deploy.0 = UAT
+		{36E205AB-B200-4559-AD5D-48EEC7F56D54}.DEV_Solution_Config|Default.ActiveCfg = DEV
+		{36E205AB-B200-4559-AD5D-48EEC7F56D54}.DEV_Solution_Config|Default.Deploy.0 = DEV
+		{36E205AB-B200-4559-AD5D-48EEC7F56D54}.PROD_Solution_Config|Default.ActiveCfg = PROD
+		{36E205AB-B200-4559-AD5D-48EEC7F56D54}.PROD_Solution_Config|Default.Deploy.0 = PROD
+		{36E205AB-B200-4559-AD5D-48EEC7F56D54}.TEST_Solution_Config|Default.ActiveCfg = TEST
+		{36E205AB-B200-4559-AD5D-48EEC7F56D54}.TEST_Solution_Config|Default.Deploy.0 = TEST
+		{36E205AB-B200-4559-AD5D-48EEC7F56D54}.UAT_Solution_Config|Default.ActiveCfg = UAT
+		{36E205AB-B200-4559-AD5D-48EEC7F56D54}.UAT_Solution_Config|Default.Deploy.0 = UAT
+		{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}.DEV_Solution_Config|Default.ActiveCfg = DEV
+		{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}.DEV_Solution_Config|Default.Deploy.0 = DEV
+		{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}.PROD_Solution_Config|Default.ActiveCfg = PROD
+		{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}.PROD_Solution_Config|Default.Deploy.0 = PROD
+		{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}.TEST_Solution_Config|Default.ActiveCfg = TEST
+		{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}.TEST_Solution_Config|Default.Deploy.0 = TEST
+		{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}.UAT_Solution_Config|Default.ActiveCfg = UAT
+		{28FE029F-D098-4AA6-80E7-2696FBBFEAF8}.UAT_Solution_Config|Default.Deploy.0 = UAT
+		{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}.DEV_Solution_Config|Default.ActiveCfg = DEV
+		{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}.DEV_Solution_Config|Default.Deploy.0 = DEV
+		{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}.PROD_Solution_Config|Default.ActiveCfg = PROD
+		{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}.PROD_Solution_Config|Default.Deploy.0 = PROD
+		{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}.TEST_Solution_Config|Default.ActiveCfg = TEST
+		{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}.TEST_Solution_Config|Default.Deploy.0 = TEST
+		{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}.UAT_Solution_Config|Default.ActiveCfg = UAT
+		{191F29F2-80E7-4AFF-B8CE-FBB235AF87A6}.UAT_Solution_Config|Default.Deploy.0 = UAT
+		{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}.DEV_Solution_Config|Default.ActiveCfg = DEV
+		{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}.DEV_Solution_Config|Default.Deploy.0 = DEV
+		{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}.PROD_Solution_Config|Default.ActiveCfg = PROD
+		{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}.PROD_Solution_Config|Default.Deploy.0 = PROD
+		{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}.TEST_Solution_Config|Default.ActiveCfg = TEST
+		{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}.TEST_Solution_Config|Default.Deploy.0 = TEST
+		{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}.UAT_Solution_Config|Default.ActiveCfg = UAT
+		{4C93AF42-E3CE-4F4F-BE2C-2053992FADDD}.UAT_Solution_Config|Default.Deploy.0 = UAT
+		{C9C2851C-98FA-4748-922E-B2ED660457A6}.DEV_Solution_Config|Default.ActiveCfg = DEV
+		{C9C2851C-98FA-4748-922E-B2ED660457A6}.DEV_Solution_Config|Default.Deploy.0 = DEV
+		{C9C2851C-98FA-4748-922E-B2ED660457A6}.PROD_Solution_Config|Default.ActiveCfg = PROD
+		{C9C2851C-98FA-4748-922E-B2ED660457A6}.PROD_Solution_Config|Default.Deploy.0 = PROD
+		{C9C2851C-98FA-4748-922E-B2ED660457A6}.TEST_Solution_Config|Default.ActiveCfg = TEST
+		{C9C2851C-98FA-4748-922E-B2ED660457A6}.TEST_Solution_Config|Default.Deploy.0 = TEST
+		{C9C2851C-98FA-4748-922E-B2ED660457A6}.UAT_Solution_Config|Default.ActiveCfg = UAT
+		{C9C2851C-98FA-4748-922E-B2ED660457A6}.UAT_Solution_Config|Default.Deploy.0 = UAT
+		{489BC167-9680-4191-8841-B4B7E80C8FCE}.DEV_Solution_Config|Default.ActiveCfg = DEV
+		{489BC167-9680-4191-8841-B4B7E80C8FCE}.DEV_Solution_Config|Default.Deploy.0 = DEV
+		{489BC167-9680-4191-8841-B4B7E80C8FCE}.PROD_Solution_Config|Default.ActiveCfg = PROD
+		{489BC167-9680-4191-8841-B4B7E80C8FCE}.PROD_Solution_Config|Default.Deploy.0 = PROD
+		{489BC167-9680-4191-8841-B4B7E80C8FCE}.TEST_Solution_Config|Default.ActiveCfg = TEST
+		{489BC167-9680-4191-8841-B4B7E80C8FCE}.TEST_Solution_Config|Default.Deploy.0 = TEST
+		{489BC167-9680-4191-8841-B4B7E80C8FCE}.UAT_Solution_Config|Default.ActiveCfg = UAT
+		{489BC167-9680-4191-8841-B4B7E80C8FCE}.UAT_Solution_Config|Default.Deploy.0 = UAT
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D25C84F-9B88-4274-9DE0-40FB34BF0064}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 8
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://rega-rmc.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = MIS_2.0\\R1_MIS.rptproj
+		SccProjectName1 = MIS_2.0
+		SccLocalPath1 = MIS_2.0
+		SccProjectUniqueName2 = BEA_Controlling\\R2_BEA\u0020Controlling.rptproj
+		SccProjectName2 = BEA_Controlling
+		SccLocalPath2 = BEA_Controlling
+		SccProjectUniqueName3 = R2_Umsatz_Assistance_Zentralen\\R2_Umsatz_Assistance_Zentralen.rptproj
+		SccProjectName3 = R2_Umsatz_Assistance_Zentralen
+		SccLocalPath3 = R2_Umsatz_Assistance_Zentralen
+		SccProjectUniqueName4 = R1_Bilanz_&_Betriebsrechnung\\R1_Bilanz_&_BetriebsRechnung.rptproj
+		SccProjectName4 = R1_Bilanz_&_Betriebsrechnung
+		SccLocalPath4 = R1_Bilanz_&_Betriebsrechnung
+		SccProjectUniqueName5 = R2_Spitalbesuche_FactSheet\\R2_Spitalbesuche_FactSheet.rptproj
+		SccProjectName5 = R2_Spitalbesuche_FactSheet
+		SccLocalPath5 = R2_Spitalbesuche_FactSheet
+		SccProjectUniqueName6 = R3_Helikopter_Einsatz_Reports\\R3_Helikopter_Einsatz_Reports.rptproj
+		SccProjectName6 = R3_Helikopter_Einsatz_Reports
+		SccLocalPath6 = R3_Helikopter_Einsatz_Reports
+		SccProjectUniqueName7 = R3_Ablösung_Tagesfile\\R3_Ablösung_Tagesfile.rptproj
+		SccProjectName7 = R3_Ablösung_Tagesfile
+		SccLocalPath7 = R3_Ablösung_Tagesfile
+	EndGlobalSection
+EndGlobal

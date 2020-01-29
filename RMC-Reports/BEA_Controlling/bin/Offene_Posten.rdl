@@ -1,0 +1,1322 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
+  <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DS_RMC_Tabular_SHARED">
+      <DataSourceReference>DS_RMC_Tabular_SHARED</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>27a43a21-cddf-4a33-b981-2800ecdbe853</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DSet_ColumnChart_Offene_Posten">
+      <Query>
+        <DataSourceName>DS_RMC_Tabular_SHARED</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="ds_param_jahr">
+            <Value>=Parameters!ParJahr.Value</Value>
+            <rd:UserDefined>true</rd:UserDefined>
+          </QueryParameter>
+          <QueryParameter Name="ds_param_monat">
+            <Value>=Parameters!ParMonat.Value</Value>
+            <rd:UserDefined>true</rd:UserDefined>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>EVALUATE
+		
+ADDCOLUMNS(
+	SUMMARIZECOLUMNS(
+		 'Buchungsdatum Offene Posten'[Jahr]
+		,'Buchungsdatum Offene Posten'[Jahr-Monat]
+		,'Buchungsdatum Offene Posten'[Monatsname]
+		,'Buchungsdatum Offene Posten'[Monatsnummer]
+	    ,FILTER (
+	    		VALUES('Buchungsdatum Offene Posten'[Datum]),
+		       	(  
+			       	'Buchungsdatum Offene Posten'[Datum] &lt;=  DATE(@ds_param_jahr  ,@ds_param_monat    , 31) &amp;&amp;
+			       	'Buchungsdatum Offene Posten'[Datum] &gt;=   DATE(@ds_param_jahr ,@ds_param_monat -23,  1)          
+	
+		       	)
+		       	) 
+		,"Anzahl OP",[Anzahl Offene Posten]
+		,"Summe OP"	,ABS(ROUND([Summe Offene Posten]	/ 1000,2))
+		
+	) //Summarized
+	
+//	,"AJahr"		, 'Buchungsdatum Offene Posten'[Jahr]	
+	,"Monat_Short"	, LEFT('Buchungsdatum Offene Posten'[Monatsname],3)
+//	,"Jahr_Monat"	, 'Buchungsdatum Offene Posten'[Jahr] &amp; "-" &amp; 'Buchungsdatum Offene Posten'[Monatsnummer]
+,"SortDate" 	, DATE('Buchungsdatum Offene Posten'[Jahr],'Buchungsdatum Offene Posten'[Monatsnummer],01)
+) // ADDColumn				
+
+Order by [Jahr] , [Monatsnummer] desc</CommandText>
+        <rd:DesignerState>
+          <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+            <CommandType>DAX</CommandType>
+            <Type>Query</Type>
+            <QuerySpecification xsi:type="MDXQuerySpecification">
+              <Select>
+                <Items>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>Buchungsdatum Offene Posten</DimensionName>
+                      <HierarchyName>Jahr</HierarchyName>
+                      <HierarchyUniqueName>[Buchungsdatum Offene Posten].[Jahr]</HierarchyUniqueName>
+                      <LevelName>Jahr</LevelName>
+                      <UniqueName>[Buchungsdatum Offene Posten].[Jahr].[Jahr]</UniqueName>
+                    </ID>
+                    <ItemCaption>Jahr</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>Buchungsdatum Offene Posten</DimensionName>
+                      <HierarchyName>Jahr-Monat</HierarchyName>
+                      <HierarchyUniqueName>[Buchungsdatum Offene Posten].[Jahr-Monat]</HierarchyUniqueName>
+                      <LevelName>Jahr-Monat</LevelName>
+                      <UniqueName>[Buchungsdatum Offene Posten].[Jahr-Monat].[Jahr-Monat]</UniqueName>
+                    </ID>
+                    <ItemCaption>Jahr-Monat</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>Buchungsdatum Offene Posten</DimensionName>
+                      <HierarchyName>Monatsname</HierarchyName>
+                      <HierarchyUniqueName>[Buchungsdatum Offene Posten].[Monatsname]</HierarchyUniqueName>
+                      <LevelName>Monatsname</LevelName>
+                      <UniqueName>[Buchungsdatum Offene Posten].[Monatsname].[Monatsname]</UniqueName>
+                    </ID>
+                    <ItemCaption>Monatsname</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>Buchungsdatum Offene Posten</DimensionName>
+                      <HierarchyName>Monatsnummer</HierarchyName>
+                      <HierarchyUniqueName>[Buchungsdatum Offene Posten].[Monatsnummer]</HierarchyUniqueName>
+                      <LevelName>Monatsnummer</LevelName>
+                      <UniqueName>[Buchungsdatum Offene Posten].[Monatsnummer].[Monatsnummer]</UniqueName>
+                    </ID>
+                    <ItemCaption>Monatsnummer</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Column">
+                      <ColumnName>[Anzahl OP]</ColumnName>
+                    </ID>
+                    <ItemCaption>Anzahl OP</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Column">
+                      <ColumnName>[Summe OP]</ColumnName>
+                    </ID>
+                    <ItemCaption>Summe OP</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Column">
+                      <ColumnName>[Monat_Short]</ColumnName>
+                    </ID>
+                    <ItemCaption>Monat_Short</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Column">
+                      <ColumnName>[SortDate]</ColumnName>
+                    </ID>
+                    <ItemCaption>SortDate</ItemCaption>
+                  </Item>
+                </Items>
+              </Select>
+              <AutoExecute>false</AutoExecute>
+              <From>RMC-Tabular</From>
+              <Filter>
+                <FilterItems />
+              </Filter>
+              <Calculations />
+              <Aggregates />
+              <QueryProperties />
+            </QuerySpecification>
+            <Query>
+              <Statement>EVALUATE
+		
+ADDCOLUMNS(
+	SUMMARIZECOLUMNS(
+		 'Buchungsdatum Offene Posten'[Jahr]
+		,'Buchungsdatum Offene Posten'[Jahr-Monat]
+		,'Buchungsdatum Offene Posten'[Monatsname]
+		,'Buchungsdatum Offene Posten'[Monatsnummer]
+	    ,FILTER (
+	    		VALUES('Buchungsdatum Offene Posten'[Datum]),
+		       	(  
+			       	'Buchungsdatum Offene Posten'[Datum] &lt;= DATE(2018 ,2    , 31) &amp;&amp;
+			       	'Buchungsdatum Offene Posten'[Datum] &gt;= DATE(2018 ,2 -23,  1)     
+	
+		       	)
+		       	) 
+		,"Anzahl OP",[Anzahl Offene Posten]
+		,"Summe OP"	,ABS(ROUND([Summe Offene Posten]	/ 1000,2))
+		
+	) //Summarized
+	
+//	,"AJahr"		, 'Buchungsdatum Offene Posten'[Jahr]	
+	,"Monat_Short"	, LEFT('Buchungsdatum Offene Posten'[Monatsname],3)
+//	,"Jahr_Monat"	, 'Buchungsdatum Offene Posten'[Jahr] &amp; "-" &amp; 'Buchungsdatum Offene Posten'[Monatsnummer]
+	,"SortDate" 	, DATE('Buchungsdatum Offene Posten'[Jahr],'Buchungsdatum Offene Posten'[Monatsnummer],01)
+) // ADDColumn				
+
+Order by [Jahr] , [Monatsnummer] desc</Statement>
+              <ParameterDefinitions />
+            </Query>
+          </QueryDefinition>
+        </rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Jahr">
+          <DataField>Buchungsdatum Offene Posten[Jahr]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ANZ_OP">
+          <DataField>[Anzahl OP]</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="Jahr_Monat">
+          <DataField>Buchungsdatum Offene Posten[Jahr-Monat]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="SUM_OP">
+          <DataField>[Summe OP]</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="MonatTxtLong">
+          <DataField>Buchungsdatum Offene Posten[Monatsname]</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="MonatTxt">
+          <DataField>[Monat_Short]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="MonatNo">
+          <DataField>Buchungsdatum Offene Posten[Monatsnummer]</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="SortDate">
+          <DataField>[SortDate]</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DSet_Par_Jahr_Default_WareInArbeit">
+      <Query>
+        <DataSourceName>DS_RMC_Tabular_SHARED</DataSourceName>
+        <CommandText>EVALUATE SUMMARIZECOLUMNS('WareInArbeitDatum'[Jahr])</CommandText>
+        <rd:DesignerState>
+          <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+            <CommandType>DAX</CommandType>
+            <QuerySpecification xsi:type="MDXQuerySpecification">
+              <Select>
+                <Items>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>WareInArbeitDatum</DimensionName>
+                      <HierarchyName>Jahr</HierarchyName>
+                      <HierarchyUniqueName>[WareInArbeitDatum].[Jahr]</HierarchyUniqueName>
+                      <LevelName>Jahr</LevelName>
+                      <UniqueName>[WareInArbeitDatum].[Jahr].[Jahr]</UniqueName>
+                    </ID>
+                    <ItemCaption>Jahr</ItemCaption>
+                    <UniqueName>true</UniqueName>
+                  </Item>
+                </Items>
+              </Select>
+              <AutoExecute>false</AutoExecute>
+              <From>RMC-Tabular</From>
+              <Filter>
+                <FilterItems />
+              </Filter>
+              <Calculations />
+              <Aggregates />
+              <QueryProperties>
+                <IncludeMemberValue>true</IncludeMemberValue>
+              </QueryProperties>
+            </QuerySpecification>
+            <Query>
+              <Statement>EVALUATE SUMMARIZECOLUMNS('WareInArbeitDatum'[Jahr])</Statement>
+              <ParameterDefinitions />
+            </Query>
+          </QueryDefinition>
+        </rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Jahr">
+          <DataField>WareInArbeitDatum[Jahr]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DSet_Par_Monat_Auswahl_SHARED">
+      <Query>
+        <DataSourceName>DS_RMC_Tabular_SHARED</DataSourceName>
+        <CommandText>EVALUATE
+SUMMARIZECOLUMNS (
+    'WareInArbeitDatum'[Monatsnummer],
+    'WareInArbeitDatum'[Monatsname],
+    FILTER (
+	        VALUES ( 'WareInArbeitDatum'[Monatsnummer] ),
+	        ( 'WareInArbeitDatum'[Monatsnummer] &lt;&gt; BLANK () )
+    )
+    ,FILTER (
+			VALUES ( 'WareInArbeitDatum'[Jahr] ),
+        	('WareInArbeitDatum'[Jahr] = 2018)
+    )  
+)</CommandText>
+        <rd:DesignerState>
+          <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+            <CommandType>DAX</CommandType>
+            <QuerySpecification xsi:type="MDXQuerySpecification">
+              <Select>
+                <Items>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>WareInArbeitDatum</DimensionName>
+                      <HierarchyName>Monatsnummer</HierarchyName>
+                      <HierarchyUniqueName>[WareInArbeitDatum].[Monatsnummer]</HierarchyUniqueName>
+                      <LevelName>Monatsnummer</LevelName>
+                      <UniqueName>[WareInArbeitDatum].[Monatsnummer].[Monatsnummer]</UniqueName>
+                    </ID>
+                    <ItemCaption>Monatsnummer</ItemCaption>
+                    <UniqueName>true</UniqueName>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>WareInArbeitDatum</DimensionName>
+                      <HierarchyName>Monatsname</HierarchyName>
+                      <HierarchyUniqueName>[WareInArbeitDatum].[Monatsname]</HierarchyUniqueName>
+                      <LevelName>Monatsname</LevelName>
+                      <UniqueName>[WareInArbeitDatum].[Monatsname].[Monatsname]</UniqueName>
+                    </ID>
+                    <ItemCaption>Monatsname</ItemCaption>
+                    <UniqueName>true</UniqueName>
+                  </Item>
+                </Items>
+              </Select>
+              <AutoExecute>false</AutoExecute>
+              <From>RMC-Tabular</From>
+              <Filter>
+                <FilterItems>
+                  <FilterItem>
+                    <HierarchyUniqueName>[WareInArbeitDatum].[Monatsnummer]</HierarchyUniqueName>
+                    <Condition xsi:type="NotEqualTo">
+                      <Members>
+                        <Member>
+                          <MemberUniqueName>[WareInArbeitDatum].[Monatsnummer].&amp;</MemberUniqueName>
+                        </Member>
+                      </Members>
+                    </Condition>
+                  </FilterItem>
+                </FilterItems>
+              </Filter>
+              <Calculations />
+              <Aggregates />
+              <QueryProperties>
+                <IncludeMemberValue>true</IncludeMemberValue>
+              </QueryProperties>
+            </QuerySpecification>
+            <Query>
+              <Statement>EVALUATE SUMMARIZECOLUMNS('WareInArbeitDatum'[Monatsnummer], 'WareInArbeitDatum'[Monatsname], FILTER(VALUES('WareInArbeitDatum'[Monatsnummer]), ('WareInArbeitDatum'[Monatsnummer] &lt;&gt; BLANK())))</Statement>
+              <ParameterDefinitions />
+            </Query>
+          </QueryDefinition>
+        </rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Monatsnummer">
+          <DataField>WareInArbeitDatum[Monatsnummer]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Monatsname">
+          <DataField>WareInArbeitDatum[Monatsname]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DSet_Par_Jahr_Default_SHARED">
+      <SharedDataSet>
+        <SharedDataSetReference>DSet_Par_Jahr_Default</SharedDataSetReference>
+      </SharedDataSet>
+      <Fields>
+        <Field Name="Jahr">
+          <DataField>Jahr</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DSet_Par_Monat_Anzeigbar">
+      <Query>
+        <DataSourceName>DS_RMC_Tabular_SHARED</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="ds_param_jahr_select">
+            <Value>=Parameters!ParJahr.Value</Value>
+            <rd:UserDefined>true</rd:UserDefined>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>EVALUATE
+SUMMARIZECOLUMNS (
+    'WareInArbeitDatum'[Jahr],
+    'WareInArbeitDatum'[Monatsname],
+    'WareInArbeitDatum'[Monatsnummer],
+    FILTER (
+        VALUES ( 'WareInArbeitDatum'[Jahr] ),
+        ( 'WareInArbeitDatum'[Jahr] = @ds_param_jahr_select)
+    ),
+    "Summe Ware in Arbeit Historie", [Summe Ware in Arbeit Historie]
+)</CommandText>
+        <rd:DesignerState>
+          <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+            <CommandType>DAX</CommandType>
+            <QuerySpecification xsi:type="MDXQuerySpecification">
+              <Select>
+                <Items>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>WareInArbeitDatum</DimensionName>
+                      <HierarchyName>Jahr</HierarchyName>
+                      <HierarchyUniqueName>[WareInArbeitDatum].[Jahr]</HierarchyUniqueName>
+                      <LevelName>Jahr</LevelName>
+                      <UniqueName>[WareInArbeitDatum].[Jahr].[Jahr]</UniqueName>
+                    </ID>
+                    <ItemCaption>Jahr</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>WareInArbeitDatum</DimensionName>
+                      <HierarchyName>Monatsname</HierarchyName>
+                      <HierarchyUniqueName>[WareInArbeitDatum].[Monatsname]</HierarchyUniqueName>
+                      <LevelName>Monatsname</LevelName>
+                      <UniqueName>[WareInArbeitDatum].[Monatsname].[Monatsname]</UniqueName>
+                    </ID>
+                    <ItemCaption>Monatsname</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>WareInArbeitDatum</DimensionName>
+                      <HierarchyName>Monatsnummer</HierarchyName>
+                      <HierarchyUniqueName>[WareInArbeitDatum].[Monatsnummer]</HierarchyUniqueName>
+                      <LevelName>Monatsnummer</LevelName>
+                      <UniqueName>[WareInArbeitDatum].[Monatsnummer].[Monatsnummer]</UniqueName>
+                    </ID>
+                    <ItemCaption>Monatsnummer</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Measure">
+                      <MeasureName>Summe Ware in Arbeit Historie</MeasureName>
+                      <UniqueName>[Measures].[Summe Ware in Arbeit Historie]</UniqueName>
+                    </ID>
+                    <ItemCaption>Summe Ware in Arbeit Historie</ItemCaption>
+                  </Item>
+                </Items>
+              </Select>
+              <AutoExecute>false</AutoExecute>
+              <From>RMC-Tabular</From>
+              <Filter>
+                <FilterItems />
+              </Filter>
+              <Calculations />
+              <Aggregates />
+              <QueryProperties />
+            </QuerySpecification>
+            <Query>
+              <Statement>EVALUATE SUMMARIZECOLUMNS('WareInArbeitDatum'[Jahr], 'WareInArbeitDatum'[Monatsname], 'WareInArbeitDatum'[Monatsnummer], FILTER(VALUES('WareInArbeitDatum'[Jahr]), ('WareInArbeitDatum'[Jahr] = VALUE("2018"))), "Summe Ware in Arbeit Historie", [Summe Ware in Arbeit Historie])</Statement>
+              <ParameterDefinitions />
+            </Query>
+          </QueryDefinition>
+        </rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Jahr">
+          <DataField>WareInArbeitDatum[Jahr]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Monatsname">
+          <DataField>WareInArbeitDatum[Monatsname]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Monatsnummer">
+          <DataField>WareInArbeitDatum[Monatsnummer]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Summe_Ware_in_Arbeit_Historie">
+          <DataField>[Summe Ware in Arbeit Historie]</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="DSet_Par_Jahr_Anzeigbar">
+      <Query>
+        <DataSourceName>DS_RMC_Tabular_SHARED</DataSourceName>
+        <CommandText>EVALUATE
+SUMMARIZECOLUMNS (
+    'WareInArbeitDatum'[Jahr],
+    FILTER (
+        VALUES ( 'WareInArbeitDatum'[Jahr] ),
+        ( 'WareInArbeitDatum'[Jahr] &lt;= year(today() ))
+    ),
+    "Summe Ware in Arbeit Historie", [Summe Ware in Arbeit Historie]
+)
+ORDER BY 'WareInArbeitDatum'[Jahr] desc</CommandText>
+        <rd:DesignerState>
+          <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+            <CommandType>DAX</CommandType>
+            <Type>Query</Type>
+            <QuerySpecification xsi:type="MDXQuerySpecification">
+              <Select>
+                <Items>
+                  <Item>
+                    <ID xsi:type="Level">
+                      <DimensionName>WareInArbeitDatum</DimensionName>
+                      <HierarchyName>Jahr</HierarchyName>
+                      <HierarchyUniqueName>[WareInArbeitDatum].[Jahr]</HierarchyUniqueName>
+                      <LevelName>Jahr</LevelName>
+                      <UniqueName>[WareInArbeitDatum].[Jahr].[Jahr]</UniqueName>
+                    </ID>
+                    <ItemCaption>Jahr</ItemCaption>
+                  </Item>
+                  <Item>
+                    <ID xsi:type="Measure">
+                      <MeasureName>Summe Ware in Arbeit Historie</MeasureName>
+                      <UniqueName>[Measures].[Summe Ware in Arbeit Historie]</UniqueName>
+                    </ID>
+                    <ItemCaption>Summe Ware in Arbeit Historie</ItemCaption>
+                  </Item>
+                </Items>
+              </Select>
+              <AutoExecute>false</AutoExecute>
+              <From>RMC-Tabular</From>
+              <Filter>
+                <FilterItems />
+              </Filter>
+              <Calculations />
+              <Aggregates />
+              <QueryProperties />
+            </QuerySpecification>
+            <Query>
+              <Statement>EVALUATE
+SUMMARIZECOLUMNS (
+    'WareInArbeitDatum'[Jahr],
+    FILTER (
+        VALUES ( 'WareInArbeitDatum'[Jahr] ),
+        ( 'WareInArbeitDatum'[Jahr] &lt;= year(today() ))
+    ),
+    "Summe Ware in Arbeit Historie", [Summe Ware in Arbeit Historie]
+)
+ORDER BY 'WareInArbeitDatum'[Jahr] desc</Statement>
+              <ParameterDefinitions />
+            </Query>
+          </QueryDefinition>
+        </rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Jahr">
+          <DataField>WareInArbeitDatum[Jahr]</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Summe_Ware_in_Arbeit_Historie">
+          <DataField>[Summe Ware in Arbeit Historie]</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="Textbox2">
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Offene Posten</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value xml:space="preserve"> </Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value />
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox1</rd:DefaultName>
+            <Left>0.05855cm</Left>
+            <Height>0.57363cm</Height>
+            <Width>5.34163cm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Chart Name="Chart3">
+            <ChartCategoryHierarchy>
+              <ChartMembers>
+                <ChartMember>
+                  <Group Name="Chart3_CategoryGroup">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!Jahr.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!Jahr.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <ChartMembers>
+                    <ChartMember>
+                      <Group Name="Chart3_CategoryGroup1">
+                        <GroupExpressions>
+                          <GroupExpression>=Fields!MonatNo.Value</GroupExpression>
+                        </GroupExpressions>
+                      </Group>
+                      <SortExpressions>
+                        <SortExpression>
+                          <Value>=Fields!MonatNo.Value</Value>
+                        </SortExpression>
+                      </SortExpressions>
+                      <Label>=IIF(Fields!MonatTxt.Value = "Jan"
+, Fields!MonatTxt.Value &amp; Microsoft.VisualBasic.Constants.vbcrlf &amp; Fields!Jahr.Value
+, Fields!MonatTxt.Value &amp; vbcrlf &amp; " ")</Label>
+                    </ChartMember>
+                  </ChartMembers>
+                  <Label>=" "</Label>
+                </ChartMember>
+              </ChartMembers>
+            </ChartCategoryHierarchy>
+            <ChartSeriesHierarchy>
+              <ChartMembers>
+                <ChartMember>
+                  <Label>SUM OP</Label>
+                </ChartMember>
+                <ChartMember>
+                  <Label>ANZ OP</Label>
+                </ChartMember>
+              </ChartMembers>
+            </ChartSeriesHierarchy>
+            <ChartData>
+              <ChartSeriesCollection>
+                <ChartSeries Name="OP_Summe">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <High>=abs(Sum(Fields!SUM_OP.Value)) *3</High>
+                        <Low>=0</Low>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style>
+                          <BackgroundColor>LightGrey</BackgroundColor>
+                          <FontFamily>Verdana</FontFamily>
+                          <FontSize>7pt</FontSize>
+                        </Style>
+                        <Label>=abs(Fields!SUM_OP.Value)</Label>
+                        <Visible>true</Visible>
+                        <Position>Top</Position>
+                      </ChartDataLabel>
+                      <Style>
+                        <Color>LightGrey</Color>
+                      </Style>
+                      <ChartMarker>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Type>Range</Type>
+                  <Subtype>Column</Subtype>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <Disabled>true</Disabled>
+                    <AllowOutSidePlotArea>True</AllowOutSidePlotArea>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+                <ChartSeries Name="OP_Anzahl">
+                  <ChartDataPoints>
+                    <ChartDataPoint>
+                      <ChartDataPointValues>
+                        <Y>=Sum(Fields!ANZ_OP.Value)</Y>
+                      </ChartDataPointValues>
+                      <ChartDataLabel>
+                        <Style>
+                          <BackgroundColor>="#00ffffff"</BackgroundColor>
+                          <FontFamily>Verdana</FontFamily>
+                          <FontSize>8pt</FontSize>
+                          <Format>#,0;-#,0</Format>
+                          <Color>="Black"</Color>
+                        </Style>
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
+                        <Position>Top</Position>
+                      </ChartDataLabel>
+                      <Style>
+                        <Border>
+                          <Color>#00ffffff</Color>
+                        </Border>
+                        <Color>Black</Color>
+                        <BackgroundGradientEndColor>Black</BackgroundGradientEndColor>
+                      </Style>
+                      <ChartMarker>
+                        <Style />
+                      </ChartMarker>
+                      <DataElementOutput>Output</DataElementOutput>
+                    </ChartDataPoint>
+                  </ChartDataPoints>
+                  <Style />
+                  <ChartEmptyPoints>
+                    <Style />
+                    <ChartMarker>
+                      <Style />
+                    </ChartMarker>
+                    <ChartDataLabel>
+                      <Style />
+                    </ChartDataLabel>
+                  </ChartEmptyPoints>
+                  <CustomProperties>
+                    <CustomProperty>
+                      <Name>PointWidth</Name>
+                      <Value>0.4</Value>
+                    </CustomProperty>
+                  </CustomProperties>
+                  <ValueAxisName>Primary</ValueAxisName>
+                  <CategoryAxisName>Primary</CategoryAxisName>
+                  <ChartSmartLabel>
+                    <Disabled>true</Disabled>
+                    <AllowOutSidePlotArea>True</AllowOutSidePlotArea>
+                    <CalloutLineColor>Black</CalloutLineColor>
+                    <MinMovingDistance>0pt</MinMovingDistance>
+                  </ChartSmartLabel>
+                </ChartSeries>
+              </ChartSeriesCollection>
+            </ChartData>
+            <ChartAreas>
+              <ChartArea Name="Default">
+                <ChartCategoryAxes>
+                  <ChartAxis Name="Primary">
+                    <Style>
+                      <Border>
+                        <Style>Solid</Style>
+                      </Border>
+                      <FontSize>9pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <Interval>1</Interval>
+                    <ChartMajorGridLines>
+                      <Enabled>False</Enabled>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <LabelsAutoFitDisabled>true</LabelsAutoFitDisabled>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                  <ChartAxis Name="Secondary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Enabled>False</Enabled>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Location>Opposite</Location>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                </ChartCategoryAxes>
+                <ChartValueAxes>
+                  <ChartAxis Name="Primary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Enabled>False</Enabled>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <HideLabels>true</HideLabels>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                  <ChartAxis Name="Secondary">
+                    <Style>
+                      <Border>
+                        <Color>Gainsboro</Color>
+                        <Style>None</Style>
+                      </Border>
+                      <FontSize>8pt</FontSize>
+                      <Color>#5c5c5c</Color>
+                    </Style>
+                    <ChartAxisTitle>
+                      <Caption />
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Color>#5c5c5c</Color>
+                      </Style>
+                    </ChartAxisTitle>
+                    <ChartMajorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                    </ChartMajorGridLines>
+                    <ChartMinorGridLines>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>Dotted</Style>
+                        </Border>
+                      </Style>
+                    </ChartMinorGridLines>
+                    <ChartMajorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                          <Style>None</Style>
+                        </Border>
+                      </Style>
+                    </ChartMajorTickMarks>
+                    <ChartMinorTickMarks>
+                      <Style>
+                        <Border>
+                          <Color>Gainsboro</Color>
+                        </Border>
+                      </Style>
+                      <Length>0.5</Length>
+                    </ChartMinorTickMarks>
+                    <CrossAt>NaN</CrossAt>
+                    <Location>Opposite</Location>
+                    <Minimum>NaN</Minimum>
+                    <Maximum>NaN</Maximum>
+                    <ChartAxisScaleBreak>
+                      <Style />
+                    </ChartAxisScaleBreak>
+                  </ChartAxis>
+                </ChartValueAxes>
+                <Style>
+                  <BackgroundColor>#00ffffff</BackgroundColor>
+                  <BackgroundGradientType>None</BackgroundGradientType>
+                </Style>
+              </ChartArea>
+            </ChartAreas>
+            <Palette>Pacific</Palette>
+            <ChartBorderSkin>
+              <Style>
+                <BackgroundColor>Gray</BackgroundColor>
+                <BackgroundGradientType>None</BackgroundGradientType>
+                <Color>White</Color>
+              </Style>
+            </ChartBorderSkin>
+            <ChartNoDataMessage Name="NoDataMessage">
+              <Caption>Keine Daten verfügbar</Caption>
+              <Style>
+                <BackgroundGradientType>None</BackgroundGradientType>
+                <FontWeight>Bold</FontWeight>
+                <TextAlign>General</TextAlign>
+                <VerticalAlign>Top</VerticalAlign>
+              </Style>
+            </ChartNoDataMessage>
+            <DataSetName>DSet_ColumnChart_Offene_Posten</DataSetName>
+            <Top>1.15047in</Top>
+            <Left>0.0635cm</Left>
+            <Height>1.52916in</Height>
+            <Width>11.5876in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Color>LightGrey</Color>
+                <Style>None</Style>
+              </Border>
+              <BackgroundGradientType>None</BackgroundGradientType>
+            </Style>
+            <cl:ComponentMetadata>
+              <cl:ComponentId>deb0fd8c-ded1-477b-8fc6-5327b7c48f05</cl:ComponentId>
+              <cl:SourcePath>/Report Parts/Chart1</cl:SourcePath>
+              <cl:SyncDate>2017-10-26T15:48:45.3295378+02:00</cl:SyncDate>
+            </cl:ComponentMetadata>
+          </Chart>
+          <Line Name="Line7">
+            <Top>1.18237cm</Top>
+            <Height>0cm</Height>
+            <Width>29.14354cm</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+              </Border>
+            </Style>
+          </Line>
+          <Textbox Name="Textbox28">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Summe </Value>
+                    <Style>
+                      <FontFamily>Verdana</FontFamily>
+                      <FontSize>8pt</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Anzahl  </Value>
+                    <Style>
+                      <FontFamily>Verdana</FontFamily>
+                      <FontSize>8pt</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox25</rd:DefaultName>
+            <Top>0.73495in</Top>
+            <Left>0.025in</Left>
+            <Height>0.31389in</Height>
+            <Width>0.54521in</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Rectangle Name="Rectangle1">
+            <KeepTogether>true</KeepTogether>
+            <Top>0.92801in</Top>
+            <Left>0.71263in</Left>
+            <Height>0.08056in</Height>
+            <Width>0.38889in</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <BackgroundColor>Black</BackgroundColor>
+            </Style>
+          </Rectangle>
+          <Rectangle Name="Rectangle2">
+            <KeepTogether>true</KeepTogether>
+            <Top>0.79745in</Top>
+            <Left>0.71207in</Left>
+            <Height>0.08056in</Height>
+            <Width>0.38889in</Width>
+            <ZIndex>5</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <BackgroundColor>Silver</BackgroundColor>
+            </Style>
+          </Rectangle>
+          <Textbox Name="Textbox14">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Switch(
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 1, "Jan", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 2, "Feb", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 3, "Mrz", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 4, "Apr", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 5, "Mai", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 6, "Jun", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 7, "Jul", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 8, "Aug", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 9, "Sep", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 10, "Okt", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 11, "Nov", 
+Month(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 12, "Dez")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox14</rd:DefaultName>
+            <Top>0.60948cm</Top>
+            <Left>0.9541cm</Left>
+            <Height>0.4353cm</Height>
+            <Width>0.77212cm</Width>
+            <ZIndex>6</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox15">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=year(min(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox14</rd:DefaultName>
+            <Top>0.60891cm</Top>
+            <Height>0.4353cm</Height>
+            <Width>0.93cm</Width>
+            <ZIndex>7</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox17">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Switch(
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 1, "Jan", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 2, "Feb", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 3, "Mrz", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 4, "Apr", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 5, "Mai", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 6, "Jun", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 7, "Jul", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 8, "Aug", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 9, "Sep", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 10, "Okt", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 11, "Nov", 
+Month(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))  = 12, "Dez")</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox14</rd:DefaultName>
+            <Top>0.60948cm</Top>
+            <Left>2.49571cm</Left>
+            <Height>0.4353cm</Height>
+            <Width>0.77212cm</Width>
+            <ZIndex>8</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox18">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=year(max(Fields!SortDate.Value, "DSet_ColumnChart_Offene_Posten"))</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox14</rd:DefaultName>
+            <Top>0.60948cm</Top>
+            <Left>3.19728cm</Left>
+            <Height>0.4353cm</Height>
+            <Width>0.93cm</Width>
+            <ZIndex>9</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox19">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=" ... "</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox14</rd:DefaultName>
+            <Top>0.60948cm</Top>
+            <Left>1.8009cm</Left>
+            <Height>0.4353cm</Height>
+            <Width>0.61182cm</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+        </ReportItems>
+        <Height>20.83563cm</Height>
+        <Style />
+      </Body>
+      <Width>29.496cm</Width>
+      <Page>
+        <PageHeight>21cm</PageHeight>
+        <PageWidth>29.7cm</PageWidth>
+        <ColumnSpacing>1.27cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="ParJahr">
+      <DataType>Integer</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>DSet_Par_Jahr_Default_SHARED</DataSetName>
+          <ValueField>Jahr</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Jahr</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="ParMonat">
+      <DataType>Integer</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>=4</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Monat</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>DSet_Par_Monat_Anzeigbar</DataSetName>
+          <ValueField>Monatsnummer</ValueField>
+          <LabelField>Monatsname</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>ParJahr</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>ParMonat</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <Language>en-US</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportServerUrl>https://rmc-uat.rega.local/ReportServer</rd:ReportServerUrl>
+  <rd:ReportID>4700b6f4-88b1-40af-b15e-288adef9a5db</rd:ReportID>
+</Report>

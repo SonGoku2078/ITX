@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="DSetPar_Jahr_Default">
+    <Query>
+      <DataSourceReference>DSource_RMC_TABULAR_SHARED</DataSourceReference>
+      <CommandText>EVALUATE
+	SUMMARIZECOLUMNS (
+	   'Einsatzdatum'[CAL_YEAR]
+	    ,FILTER (
+	        VALUES ('Einsatzdatum'[CALENDAR_DATE]),
+	        ( YEAR ('Einsatzdatum'[CALENDAR_DATE]) = YEAR(Today())) 
+	    )
+	)</CommandText>
+      <rd:DesignerState>
+        <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+          <CommandType>DAX</CommandType>
+          <QuerySpecification xsi:type="MDXQuerySpecification">
+            <Select>
+              <Items>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Einsatzdatum</DimensionName>
+                    <HierarchyName>Einsatzdatumhierarchie</HierarchyName>
+                    <HierarchyUniqueName>[Einsatzdatum].[Einsatzdatumhierarchie]</HierarchyUniqueName>
+                    <LevelName>Jahr</LevelName>
+                    <UniqueName>[Einsatzdatum].[Einsatzdatumhierarchie].[Jahr]</UniqueName>
+                  </ID>
+                  <ItemCaption>Jahr</ItemCaption>
+                  <UniqueName>true</UniqueName>
+                </Item>
+              </Items>
+            </Select>
+            <AutoExecute>false</AutoExecute>
+            <From>RMC-Tabular</From>
+            <Filter>
+              <FilterItems />
+            </Filter>
+            <Calculations />
+            <Aggregates />
+            <QueryProperties>
+              <IncludeMemberValue>true</IncludeMemberValue>
+            </QueryProperties>
+          </QuerySpecification>
+          <Query>
+            <Statement>EVALUATE SUMMARIZECOLUMNS('Einsatzdatum'[CAL_YEAR])</Statement>
+            <ParameterDefinitions />
+          </Query>
+        </QueryDefinition>
+      </rd:DesignerState>
+    </Query>
+    <Fields>
+      <Field Name="Jahr">
+        <DataField>Einsatzdatum[CAL_YEAR]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

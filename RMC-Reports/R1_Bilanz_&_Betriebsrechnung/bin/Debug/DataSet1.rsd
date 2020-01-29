@@ -1,0 +1,772 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="DataSet1">
+    <Query>
+      <DataSourceReference>DSource_RMC_TABULAR</DataSourceReference>
+      <CommandText>EVALUATE
+UNION(
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 1)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 1	
+		,"Monat"			,"Jan"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 2)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 2	
+		,"Monat"			,"Feb"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 3)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 3	
+		,"Monat"			,"Mrz"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 4)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 4	
+		,"Monat"			,"Apr"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 2)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 5	
+		,"Monat"			,"Mai"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 6)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 6	
+		,"Monat"			,"Jun"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 7)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 7
+		,"Monat"			,"Jul"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 8)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 8
+		,"Monat"			,"Aug"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 9)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 9	
+		,"Monat"			,"Sep"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 10)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 10
+		,"Monat"			,"Okt"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 11)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 11
+		,"Monat"			,"Nov"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 12)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 12	
+		,"Monat"			,"Dez"
+	)	// Add Columns
+
+)</CommandText>
+      <rd:DesignerState>
+        <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+          <CommandType>DAX</CommandType>
+          <Type>Query</Type>
+          <QuerySpecification xsi:type="MDXQuerySpecification">
+            <Select>
+              <Items>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Material</DimensionName>
+                    <HierarchyName>Einsatzmittel</HierarchyName>
+                    <HierarchyUniqueName>[Material].[Einsatzmittel]</HierarchyUniqueName>
+                    <LevelName>Einsatzmittel</LevelName>
+                    <UniqueName>[Material].[Einsatzmittel].[Einsatzmittel]</UniqueName>
+                  </ID>
+                  <ItemCaption>Einsatzmittel</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[VJ]</ColumnName>
+                  </ID>
+                  <ItemCaption>VJ</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[AJ]</ColumnName>
+                  </ID>
+                  <ItemCaption>AJ</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[AVG5J]</ColumnName>
+                  </ID>
+                  <ItemCaption>AVG5J</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[HierarchyLevel]</ColumnName>
+                  </ID>
+                  <ItemCaption>HierarchyLevel</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[Content]</ColumnName>
+                  </ID>
+                  <ItemCaption>Content</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[SortOrder]</ColumnName>
+                  </ID>
+                  <ItemCaption>SortOrder</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[Monat]</ColumnName>
+                  </ID>
+                  <ItemCaption>Monat</ItemCaption>
+                </Item>
+              </Items>
+            </Select>
+            <AutoExecute>false</AutoExecute>
+            <From>RMC-Tabular</From>
+            <Filter>
+              <FilterItems />
+            </Filter>
+            <Calculations />
+            <Aggregates />
+            <QueryProperties />
+          </QuerySpecification>
+          <Query>
+            <Statement>EVALUATE
+UNION(
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 1)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 1	
+		,"Monat"			,"Jan"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 2)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 2	
+		,"Monat"			,"Feb"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 3)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 3	
+		,"Monat"			,"Mrz"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 4)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 4	
+		,"Monat"			,"Apr"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 2)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 5	
+		,"Monat"			,"Mai"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 6)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 6	
+		,"Monat"			,"Jun"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 7)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 7
+		,"Monat"			,"Jul"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 8)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 8
+		,"Monat"			,"Aug"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 9)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 9	
+		,"Monat"			,"Sep"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 10)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 10
+		,"Monat"			,"Okt"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 11)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 11
+		,"Monat"			,"Nov"
+	)	// Add Columns
+,
+	ADDCOLUMNS(
+		SUMMARIZECOLUMNS (
+		    'Material'[Einsatzmittel]
+		    ,FILTER (
+		        	VALUES ( 'Material'[Einsatzmittel] ),
+		        	('Material'[Einsatzmittel] &lt;&gt; "" ) &amp;&amp; ( 'Material'[Einsatzmittel] &lt;&gt; "Unknown" ) &amp;&amp; ( 'Material'[Einsatzmittel] = "Jet")
+		 			)
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+		        	('Einsatzdatum'[CAL_YEAR] =2016)
+		    		)	    	
+		    ,FILTER (
+					VALUES ( 'Einsatzdatum'[CAL_MONTH_NO] ),
+		        	('Einsatzdatum'[CAL_MONTH_NO] = 12)
+		    		)	    		
+		    ,"VJ"			,CALCULATE([Flugdauer in min. Total],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+			,"AJ"			,CALCULATE([Flugdauer in min. Total])
+			,"AVG5J"		,CALCULATE([Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre])
+			,"HierarchyLevel",CALCULATE(1)
+	
+		) // SummarizeColumn	
+		
+		,"Content"			,"FlugdauerJeEinsatzmittel"
+		,"SortOrder"		, 12	
+		,"Monat"			,"Dez"
+	)	// Add Columns
+
+)</Statement>
+            <ParameterDefinitions />
+          </Query>
+        </QueryDefinition>
+      </rd:DesignerState>
+    </Query>
+    <Fields>
+      <Field Name="Einsatzmittel">
+        <DataField>Material[Einsatzmittel]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="VJ">
+        <DataField>[VJ]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AJ">
+        <DataField>[AJ]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AVG5J">
+        <DataField>[AVG5J]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="HierarchyLevel">
+        <DataField>[HierarchyLevel]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Content">
+        <DataField>[Content]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="SortOrder">
+        <DataField>[SortOrder]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Monat">
+        <DataField>[Monat]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

@@ -1,0 +1,1355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="DSet_Tabelle_Einsätze_und_Zeiten">
+    <Query>
+      <DataSourceReference>DS_TABULAR</DataSourceReference>
+      <DataSetParameters>
+        <DataSetParameter Name="DS_Param_Jahr">
+          <DefaultValue>=2017</DefaultValue>
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:UserDefined>true</rd:UserDefined>
+          <rd:DbType>Int32</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="DS_Param_Monat">
+          <DefaultValue>"April"</DefaultValue>
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:UserDefined>true</rd:UserDefined>
+          <rd:DbType>String</rd:DbType>
+        </DataSetParameter>
+      </DataSetParameters>
+      <CommandText>// Changes
+// --------
+// 11.03.2019 - Im FILTER, nach Union, die Basis HBES noch hinzugefügt damit diese auch angezeigt werden im Bericht
+//
+// 12.12.2018 - Bei diversen "Bereitschaftsstufen" den FILTER (Einsatzland[Land] = "Schweiz") entfernt 
+//			  - FILTER hinzugefügt zu Bereitschaftsstufen :
+//						 FILTER	(
+//						    	VALUES ('Einsatzart'[Einsatzart] ),
+//						    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+//						    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+//						    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+//						    	)
+//			  - Kennzahlen eingebaut :
+//										- [Anzahl Basenschliessungen - durchschnitt letzte 5 Jahre]
+//										- [Dauer Basenschliessung in Minuten - durchschnitt letzte 5 Jahre]
+//
+// 06.12.2018 - Filter bei FOM-Einsätzen erweitert um 
+//					FomArt1[Bezeichnung] &lt;&gt; "Löschkübel" 			
+//			  - BasenschliessungsDauer/Anzahl hinzugefügt
+//
+// 05.12.2018 - SortOrder für "Unknown"-Werte eingefügt, damit diese immer zuletzt auf dem Report angezeigt werden
+//            - "Unknown" durch "nicht spezifiziert" ersetzt mittels Funktionen(AddColumns, SelectColumns und SUBSTITUTE) 
+//			  - leere Zeilen rausgefiltert via FILTER()
+//
+//			  - Filter bei FOM-Einsätzen
+//					FomArt1[Bezeichnung] &lt;&gt; "MCF" 					&amp;&amp;
+//				    FomArt1[Bezeichnung] &lt;&gt; "IFR Approach Check" 	&amp;&amp;
+//			    	FomArt1[Bezeichnung] &lt;&gt; "MOR Check"
+//
+//			  - Filter bei Statisischen-Einsätzen 				   	
+//		 			EinsatzartStatistisch[Einsatzart] &lt;&gt; "Crew Grundausbildung" 		&amp;&amp;
+//     				EinsatzartStatistisch[Einsatzart] &lt;&gt; "Crew Training / Refresher" 	&amp;&amp;
+//	 				EinsatzartStatistisch[Einsatzart] &lt;&gt; "Crew Check" 
+//
+// 29.11.2018 - SortOrder für "Bereitschaftstufen geändert auf 1,2,3,4,0
+//
+// 23.11.2018 - Restliche Kennzahlen eigebaut
+//
+// 22.11.2018 - Fehlende Kennzahlen eigebaut (mehrheitlich AVG5J)
+//
+// 21.11.2018 - Erste Feedback von SHö : Labels (Thema)für Einsätze umbenannt
+//
+// 15.11.2018 - Umbenannte Kennzahl [Bereitschaftsstufe "0-4" Flugzeit in min] eingesetzt
+//
+// 08.11.2018 - Kennzahlt [Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre] zu "Statisische Einsätze" &amp; FOM hinzugefügt 
+// 
+// 07.11.2018 - Basen, Basentyp hinzugefügt
+//  		  - Filter auf Basen/Typ eingebaut
+// 29.10.2018 - Query erstellt 
+//
+
+
+DEFINE
+	VAR 
+		DS_Variable_Jahr	= @DS_Param_Jahr
+//		DS_Variable_Jahr	= 2018
+	VAR 
+		DS_Variable_Monat	= @DS_Param_Monat
+//		DS_Variable_Monat	= "April"	
+ 
+
+EVALUATE
+
+
+
+SELECTCOLUMNS(
+
+	ADDCOLUMNS(
+	
+		FILTER(
+		
+			Union(
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "4" (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 4 (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt Bereitschaftstufe 4]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt Bereitschaftstufe 4],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt Bereitschaftstufe 4 - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	4
+			)
+			
+			
+			,  // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "3" (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 3 (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt Bereitschaftstufe 3]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt Bereitschaftstufe 3],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt Bereitschaftstufe 3 - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	3
+			)
+			
+			,  // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "2" (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 2 (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt Bereitschaftstufe 2]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt Bereitschaftstufe 2],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt Bereitschaftstufe 2 - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	2
+			)
+			
+			,  // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "1" (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 1 (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt Bereitschaftstufe 1]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt Bereitschaftstufe 1],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt Bereitschaftstufe 1 - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 1
+			)
+			
+			
+			
+			
+			
+			,  // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "0" (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 0 (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt Bereitschaftstufe 0]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt Bereitschaftstufe 0],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt Bereitschaftstufe 0 - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	5
+			)
+			
+			,  // Union
+			
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "4" - Flugdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 4 - Flugdauer"
+				,"AJ"	,Round(		  	 [Flugzeit in min Total Bereitschaftsstufe 4] / 60,0)
+				,"VJ"	,Round(CALCULATE([Flugzeit in min Total Bereitschaftsstufe 4],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(		 	 [Flugzeit in min Total Bereitschaftsstufe 4 - durchschnitt letzte 5 Jahre] / 60,0)
+				)
+				,"SortOrder", 	4
+			)
+			, // Union
+			
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "3" - Flugdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 3 - Flugdauer"
+				,"AJ"	,Round(		  	 [Flugzeit in min Total Bereitschaftsstufe 3] / 60,0)
+				,"VJ"	,Round(CALCULATE([Flugzeit in min Total Bereitschaftsstufe 3],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(		 	 [Flugzeit in min Total Bereitschaftsstufe 3 - durchschnitt letzte 5 Jahre] / 60,0)
+				)
+				,"SortOrder", 	3
+			)
+			, // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "2" - Flugdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 2 - Flugdauer"
+				,"AJ"	,Round( 		 [Flugzeit in min Total Bereitschaftsstufe 2] / 60,0)
+				,"VJ"	,Round(CALCULATE([Flugzeit in min Total Bereitschaftsstufe 2],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round( 		 [Flugzeit in min Total Bereitschaftsstufe 2 - durchschnitt letzte 5 Jahre] / 60,0)
+				)
+				,"SortOrder", 	2
+			)
+			, // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "1" - Flugdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 1 - Flugdauer"
+				,"AJ"	,Round(		  	 [Flugzeit in min Total Bereitschaftsstufe 1] / 60,0)
+				,"VJ"	,Round(CALCULATE([Flugzeit in min Total Bereitschaftsstufe 1],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(		 	 [Flugzeit in min Total Bereitschaftsstufe 1 - durchschnitt letzte 5 Jahre] / 60,0)
+				)
+				,"SortOrder", 	1
+			)
+		
+			, // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "0" - Flugdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 0 - Flugdauer"
+				,"AJ"	,Round(		  	 [Flugzeit in min Total Bereitschaftsstufe 0] / 60,0)
+				,"VJ"	,Round(CALCULATE([Flugzeit in min Total Bereitschaftsstufe 0],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round( 		 [Flugzeit in min Total Bereitschaftsstufe 0 - durchschnitt letzte 5 Jahre] / 60,0)
+				)
+				,"SortOrder", 	5
+			)
+			
+			, // Union
+			
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "4" - Einsatzdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 4 - Einsatzdauer"
+				,"AJ"	,Round(			 [Einsatzdauer in min Bereitschaftsstufe 4] / 60,0)
+				,"VJ"	,Round(CALCULATE([Einsatzdauer in min Bereitschaftsstufe 4],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(			 [Einsatzdauer in min Bereitschaftsstufe 4]  / 60,0)
+				)
+				,"SortOrder", 	4
+			)
+			
+			, // Union
+			
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "3" - Einsatzdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 3 - Einsatzdauer"	   			
+				,"AJ"	,Round(			 [Einsatzdauer in min Bereitschaftsstufe 3] / 60,0)
+				,"VJ"	,Round(CALCULATE([Einsatzdauer in min Bereitschaftsstufe 3],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(			 [Einsatzdauer in min Bereitschaftsstufe 3]  / 60,0)
+				)
+				,"SortOrder", 	3
+			)
+			
+			, // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "2" - Einsatzdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 2 - Einsatzdauer"
+				,"AJ"	,Round(			 [Einsatzdauer in min Bereitschaftsstufe 2] / 60,0)
+				,"VJ"	,Round(CALCULATE([Einsatzdauer in min Bereitschaftsstufe 2],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(			 [Einsatzdauer in min Bereitschaftsstufe 2]  / 60,0)
+				)
+				,"SortOrder", 	2
+			)
+			
+			, // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "1" - Einsatzdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 1 - Einsatzdauer"
+				,"AJ"	,Round(			 [Einsatzdauer in min Bereitschaftsstufe 1] / 60,0)
+				,"VJ"	,Round(CALCULATE([Einsatzdauer in min Bereitschaftsstufe 1],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(			 [Einsatzdauer in min Bereitschaftsstufe 1]  / 60,0)
+				)
+				,"SortOrder", 	1
+			)
+			
+			, // Union
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "0" - Einsatzdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ('Einsatzart'[Einsatzart] ),
+				    	('Einsatzart'[Einsatzart] = "Primäreinsätze"   	) ||
+				    	('Einsatzart'[Einsatzart] = "Spezielle Einsätze") ||    	
+				    	('Einsatzart'[Einsatzart] = "Sekundäreinsätze"  )
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 0 - Einsatzdauer"
+				,"AJ"	,Round(			[Einsatzdauer in min Bereitschaftsstufe 0] / 60,0)
+				,"VJ"	,Round(CALCULATE( 	[Einsatzdauer in min Bereitschaftsstufe 0],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(			[Einsatzdauer in min Bereitschaftsstufe 0 - durchschnitt letzte 5 Jahre]  / 60,0)
+				)
+				,"SortOrder", 	5
+			)
+			
+			,  // Union
+			
+			//---------------------------------------------------------------	
+			// Abgesagte Einsätze (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze abgesagt (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze abgesagt]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze abgesagt],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze abgesagt - durchschnitt letzte 5 Jahre]	
+				)
+				,"SortOrder", 	
+									 SWITCH
+											(Einsatzart[Einsatzart],
+											"Primäreinsätze"			, 2,						
+											"Sekundäreinsätze"			, 3,
+											"Contadino"					, 4,
+											"Spezielle Einsätze"		, 5,
+																		 10
+											)
+			)
+			
+			,  // Union
+			//---------------------------------------------------------------	
+			// Abgebrochene Einsätze (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze abgebrochen (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze abgebrochen]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze abgebrochen],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze abgebrochen - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	
+									 SWITCH
+											(Einsatzart[Einsatzart],
+											"Primäreinsätze"			, 2,						
+											"Sekundäreinsätze"			, 3,
+											"Contadino"					, 4,
+											"Spezielle Einsätze"		, 5,
+																		 10
+											)
+			)
+		
+			,  // Union
+			//---------------------------------------------------------------	
+			// ARS Einsätze (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze mit ARS (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt ARS]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt ARS],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt ARS - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	
+									 SWITCH
+											(Einsatzart[Einsatzart],
+											"Primäreinsätze"			, 2,						
+											"Sekundäreinsätze"			, 3,
+											"Contadino"					, 4,
+											"Spezielle Einsätze"		, 5,
+																		 10
+											)
+			)
+			
+			,  // Union
+			
+			//---------------------------------------------------------------	
+			// Durchgeführte NachtEinsätze (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)	
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Nachteinsätze durchgeführt (Anzahl)"
+				,"AJ"	,			[Anzahl Nachteinsätze durchgeführt]
+				,"VJ"	,CALCULATE( [Anzahl Nachteinsätze durchgeführt],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Nachteinsätze durchgeführt - durchschnitt letzte 5 Jahre]
+				
+				)
+				,"SortOrder", 	
+									 SWITCH
+											(Einsatzart[Einsatzart],
+											"Primäreinsätze"			, 2,						
+											"Sekundäreinsätze"			, 3,
+											"Contadino"					, 4,
+											"Spezielle Einsätze"		, 5,
+																		 10
+											)
+			)
+			,  // Union
+				
+			//---------------------------------------------------------------	
+			// Durchgeführte Einsätze (Anzahl)
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzart[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Einsätze durchgeführt (Anzahl)"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	
+									 SWITCH
+											(Einsatzart[Einsatzart],
+											"Primäreinsätze"			, 2,						
+											"Sekundäreinsätze"			, 3,
+											"Contadino"					, 4,
+											"Spezielle Einsätze"		, 5,
+																		 10
+											)
+			)
+		
+			,  // Union
+			
+			//---------------------------------------------------------------	
+			// FOM - Einsätze
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				 FomArt1[Bezeichnung]
+				,Basis[Basis],Basis[Basistyp]
+				//,FomArt1[FomCode]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			   	,FILTER (
+			   			VALUES ( 'FomArt1'[Bezeichnung] ),
+			   			(FomArt1[Bezeichnung] &lt;&gt; "Löschkübel"  			&amp;&amp;
+			   			 FomArt1[Bezeichnung] &lt;&gt; "MCF" 					&amp;&amp;
+					     FomArt1[Bezeichnung] &lt;&gt; "IFR Approach Check" 	&amp;&amp;
+				    	 FomArt1[Bezeichnung] &lt;&gt; "MOR Check"
+				    	) 
+						)   
+			    ,"Thema","FOM - Einsätze"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre]
+				
+				)
+				,"SortOrder", 	IF(FomArt1[Bezeichnung] ="Unknown",99,0)
+			)
+			
+			
+			,  // Union
+			
+			
+			//---------------------------------------------------------------	
+			// Statistische Einsatzart - Einsätze
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				 EinsatzartStatistisch[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			   	,FILTER (
+			   			VALUES ( 'EinsatzartStatistisch'[Einsatzart]),
+			   			(EinsatzartStatistisch[Einsatzart] &lt;&gt; "Crew Grundausbildung" 		&amp;&amp;
+					     EinsatzartStatistisch[Einsatzart] &lt;&gt; "Crew Training / Refresher" 	&amp;&amp;
+				    	 EinsatzartStatistisch[Einsatzart] &lt;&gt; "Crew Check" 
+				    	) 
+						)
+			    ,"Thema","Statistische Einsatzart - Einsätze"
+				,"AJ"	,			[Anzahl Einsätze durchgeführt]
+				,"VJ"	,CALCULATE( [Anzahl Einsätze durchgeführt],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Einsätze durchgeführt - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	IF(EinsatzartStatistisch[Einsatzart] ="Unknown",99,0)
+			)
+			
+			,  // Union
+			
+			//---------------------------------------------------------------	
+			// Einsatzart - Patienten
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				'Einsatzart'[Einsatzart],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","EinsatzArt-Patienten"
+				,"AJ"	,			[Anzahl Patienten durchgeführt]
+				,"VJ"	,CALCULATE( [Anzahl Patienten durchgeführt],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Patienten durchgeführt - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	
+									 SWITCH
+											(Einsatzart[Einsatzart],
+											"Primäreinsätze"			, 2,						
+											"Sekundäreinsätze"			, 3,
+											"Contadino"					, 4,
+											"Spezielle Einsätze"		, 5,
+																		 10
+											)
+			)
+			
+			
+			,  // Union
+			
+			//---------------------------------------------------------------	
+			// NACA Score - Patienten
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				'NACA Score'[Bezeichnung],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+			   			)
+			    ,"Thema","Naca-Patienten"
+				,"AJ"	,			[Anzahl Patienten durchgeführt]
+				,"VJ"	,CALCULATE(	[Anzahl Patienten durchgeführt],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Patienten durchgeführt - durchschnitt letzte 5 Jahre]
+				)
+				,"SortOrder", 	IF('NACA Score'[Bezeichnung] ="Unknown",99,0)
+			)
+			
+			
+			,  // Union
+			
+			//---------------------------------------------------------------
+			// Unfallursachen - Patienten
+			//---------------------------------------------------------------
+			
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				'Ursache'[Ursache],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+						)	
+			    ,"Thema","UnfallUrsache-Patienten"
+				,"AJ"	,			[Anzahl Patienten durchgeführt]
+				,"VJ"	,CALCULATE( [Anzahl Patienten durchgeführt],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))
+				,"AVG5J",			[Anzahl Patienten durchgeführt - durchschnitt letzte 5 Jahre]	
+					)
+				,"SortOrder", 	IF('Ursache'[Ursache] ="Unknown",99,0)
+			)
+			
+			
+			,  // Union
+
+
+			//---------------------------------------------------------------
+			// Basenschliessungen - Total
+			//---------------------------------------------------------------
+		
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Schliessungsgrund[Schliessungsgrund],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Basenschliessungsdatum'[CAL_YEAR] ),
+				    	('Basenschliessungsdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Basenschliessungsdatum'[CAL_MONTH_NAME] ),
+				    	('Basenschliessungsdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+						)	
+			    ,"Thema","Basenschliessungen-Total"
+				,"AJ"	,			[Anzahl Basenschliessungen]
+				,"VJ"	,CALCULATE( [Anzahl Basenschliessungen],SAMEPERIODLASTYEAR('Basenschliessungsdatum'[CALENDAR_DATE]))
+				,"AVG5J",CALCULATE( [Anzahl Basenschliessungen - durchschnitt letzte 5 Jahre])
+					)
+				,"SortOrder", 	0
+			)
+			
+			,  // Union
+
+
+			//---------------------------------------------------------------
+			// Basenschliessungen - Anzahl
+			//---------------------------------------------------------------
+		
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Schliessungsgrund[Schliessungsgrund],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Basenschliessungsdatum'[CAL_YEAR] ),
+				    	('Basenschliessungsdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Basenschliessungsdatum'[CAL_MONTH_NAME] ),
+				    	('Basenschliessungsdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+						)	
+			    ,"Thema","Basenschliessungen-Anzahl"
+				,"AJ"	,			[Anzahl Basenschliessungen]
+				,"VJ"	,CALCULATE( [Anzahl Basenschliessungen],SAMEPERIODLASTYEAR('Basenschliessungsdatum'[CALENDAR_DATE]))
+				,"AVG5J",CALCULATE( [Anzahl Basenschliessungen - durchschnitt letzte 5 Jahre])
+					)
+				,"SortOrder", 	0
+			)
+			
+			,  // Union
+	
+			//---------------------------------------------------------------
+			// Basenschliessungen - Dauer in min
+			//---------------------------------------------------------------
+		
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Schliessungsgrund[Schliessungsgrund],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Basenschliessungsdatum'[CAL_YEAR] ),
+				    	('Basenschliessungsdatum'[CAL_YEAR] = DS_Variable_Jahr )
+						)
+				,FILTER (
+						VALUES ( 'Basenschliessungsdatum'[CAL_MONTH_NAME] ),
+				    	('Basenschliessungsdatum'[CAL_MONTH_NAME] = DS_Variable_Monat)
+						)	
+			    ,"Thema","Basenschliessungen-Dauer"
+				,"AJ"	,Round(			 [Dauer Basenschliessung in Minuten] / 60,0)
+				,"VJ"	,Round(CALCULATE([Dauer Basenschliessung in Minuten],SAMEPERIODLASTYEAR('Basenschliessungsdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(			 [Dauer Basenschliessung in Minuten - durchschnitt letzte 5 Jahre]  / 60,0)
+					)
+				,"SortOrder", 	0
+			)
+			
+			
+			) // Union
+		
+		, // FILTER
+		
+			(
+
+				//------ Basen filtern -------- 
+				(
+				 'Basis'[Basistyp] 	= "Mittelland" 	  							||  
+				 'Basis'[Basistyp] 	= "Gebirgsbasis"  							||
+				('Basis'[Basis] 	= "EBGE" &amp;&amp; 'Basis'[Basistyp] = "Partner") 	||
+				('Basis'[Basis] 	= "HBES" &amp;&amp; 'Basis'[Basistyp] = "Partner") 	||
+				('Basis'[Basis] 	= "AGLL" &amp;&amp; 'Basis'[Basistyp] = "Partner") 	||
+				('Basis'[Basis] 	= "AGLS" &amp;&amp; 'Basis'[Basistyp] = "Partner")
+				)
+				
+				//------ Leere Zeilen rausfiltern ------ 
+
+				&amp;&amp;	(ISBLANK([Einsatzart])= false) // Leerzeilen rausfiltern 
+				&amp;&amp;
+				
+				//------ FOM Codes rausfiltern ------ 				
+					(
+					[Einsatzart] 			&lt;&gt; "Löschkübel" 		|| 
+					[Einsatzart] 			&lt;&gt; "MCF" 				|| 
+					[Einsatzart] 			&lt;&gt; "MOR Check"			||
+					[Einsatzart] 			&lt;&gt; "IFR Approach Check"	
+					)
+				
+			)
+		
+		) // FILTER
+		
+	,"Land2",SUBSTITUTE([Einsatzart],"Unknown","nicht spezifiziert")
+	) // AddColumns
+
+
+
+,"Land"		,[Land2]
+,"Basis"	,[Basis]
+,"Basistyp"	,[Basistyp]
+,"Thema"	,[Thema]
+,"AJ"		,[AJ]
+,"VJ"		,[VJ]
+,"AVG5J"	,[AVG5J]
+,"SortOrder",[SortOrder]
+) // SelectColumns
+
+
+
+ORDER BY [Thema]</CommandText>
+      <rd:DesignerState>
+        <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+          <CommandType>DAX</CommandType>
+          <Type>Query</Type>
+          <QuerySpecification xsi:type="MDXQuerySpecification">
+            <Select>
+              <Items>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[Land]</ColumnName>
+                  </ID>
+                  <ItemCaption>Land</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[Basis]</ColumnName>
+                  </ID>
+                  <ItemCaption>Basis</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[Basistyp]</ColumnName>
+                  </ID>
+                  <ItemCaption>Basistyp</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[Thema]</ColumnName>
+                  </ID>
+                  <ItemCaption>Thema</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[AJ]</ColumnName>
+                  </ID>
+                  <ItemCaption>AJ</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[VJ]</ColumnName>
+                  </ID>
+                  <ItemCaption>VJ</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[AVG5J]</ColumnName>
+                  </ID>
+                  <ItemCaption>AVG5J</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Column">
+                    <ColumnName>[SortOrder]</ColumnName>
+                  </ID>
+                  <ItemCaption>SortOrder</ItemCaption>
+                </Item>
+              </Items>
+            </Select>
+            <AutoExecute>false</AutoExecute>
+            <From>RMC-Tabular</From>
+            <Filter>
+              <FilterItems />
+            </Filter>
+            <Calculations />
+            <Aggregates />
+            <QueryProperties />
+          </QuerySpecification>
+          <Query>
+            <Statement>EVALUATE
+
+SELECTCOLUMNS(
+
+	ADDCOLUMNS(
+	
+		FILTER(
+		
+
+			//---------------------------------------------------------------	
+			// Einsätze je Bereitschaftsstufe "0" - Einsatzdauer
+			//---------------------------------------------------------------
+			ADDCOLUMNS(
+				SUMMARIZECOLUMNS(
+				Einsatzland[Land],Basis[Basis],Basis[Basistyp]
+				,FILTER (
+				    	VALUES ( Einsatzland[Land] ),	        	
+				    	(Einsatzland[Land] = "Schweiz")
+				    	)
+				,FILTER (
+				    	VALUES ( 'Material'[Materialcode] ),	        	
+				    	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+				    	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+				    	('Material'[Materialcode] = "64" ) ||
+				    	('Material'[Materialcode] = "67" ) || ('Material'[Materialcode] = "69" ) 
+				    	)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_YEAR] ),
+				    	('Einsatzdatum'[CAL_YEAR] = 2018 )
+						)
+				,FILTER (
+						VALUES ( 'Einsatzdatum'[CAL_MONTH_NAME] ),
+				    	('Einsatzdatum'[CAL_MONTH_NAME] = "April")
+			   			)
+			    ,"Thema","Einsätze je Bereitschaftsstufe 0 - Einsatzdauer"
+				,"AJ"	,Round(			[Einsatzdauer in min Bereitschaftsstufe 0] / 60,0)
+				,"VJ"	,Round(CALCULATE( 	[Einsatzdauer in min Bereitschaftsstufe 0],SAMEPERIODLASTYEAR('Einsatzdatum'[CALENDAR_DATE]))/60,0)
+				,"AVG5J",Round(			[Einsatzdauer in min Bereitschaftsstufe 0 - durchschnitt letzte 5 Jahre]  / 60,0)
+				)
+				,"SortOrder", 	5
+			)
+		
+		, // FILTER
+		
+			(
+				(
+				 'Basis'[Basistyp] 	= "Mittelland" 	  							||  
+				 'Basis'[Basistyp] 	= "Gebirgsbasis"  							||
+				('Basis'[Basis] 	= "EBGE" &amp;&amp; 'Basis'[Basistyp] = "Partner") 	||
+				('Basis'[Basis] 	= "AGLL" &amp;&amp; 'Basis'[Basistyp] = "Partner") 	||
+				('Basis'[Basis] 	= "AGLS" &amp;&amp; 'Basis'[Basistyp] = "Partner")
+				)
+				
+				&amp;&amp;	(ISBLANK([Land])= false) // Leerzeilen rausfiltern 
+			)
+		
+		) // FILTER
+		
+	,"Land2",SUBSTITUTE([Land],"Unknown","nicht spezifiziert")
+	) // AddColumns
+
+
+
+,"Land"		,[Land2]
+,"Basis"	,[Basis]
+,"Basistyp"	,[Basistyp]
+,"Thema"	,[Thema]
+,"AJ"		,[AJ]
+,"VJ"		,[VJ]
+,"AVG5J"	,[AVG5J]
+,"SortOrder",[SortOrder]
+) // SelectColumns
+
+
+
+</Statement>
+            <ParameterDefinitions />
+          </Query>
+        </QueryDefinition>
+      </rd:DesignerState>
+    </Query>
+    <Fields>
+      <Field Name="Land">
+        <DataField>[Land]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Basis">
+        <DataField>[Basis]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Basistyp">
+        <DataField>[Basistyp]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Thema">
+        <DataField>[Thema]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AJ">
+        <DataField>[AJ]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="VJ">
+        <DataField>[VJ]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AVG5J">
+        <DataField>[AVG5J]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="SortOrder">
+        <DataField>[SortOrder]</DataField>
+        <rd:UserDefined>true</rd:UserDefined>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

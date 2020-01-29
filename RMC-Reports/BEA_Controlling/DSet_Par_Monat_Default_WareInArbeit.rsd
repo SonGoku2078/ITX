@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="DSet_Par_Monat_Default_WareInArbeit">
+    <Query>
+      <DataSourceReference>DS_TABULAR</DataSourceReference>
+      <CommandText>EVALUATE
+	SUMMARIZECOLUMNS (
+	     'Einsatzdatum'[CAL_MONTH_NAME]
+	    ,'Einsatzdatum'[CAL_MONTH_NO]	   
+	    , FILTER (
+	        VALUES ('Einsatzdatum'[CALENDAR_DATE]),
+	        ( MONTH('Einsatzdatum'[CALENDAR_DATE]) = MONTH(Today())) 
+	    )
+	)</CommandText>
+      <rd:DesignerState>
+        <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+          <CommandType>DAX</CommandType>
+          <Type>Query</Type>
+          <QuerySpecification xsi:type="MDXQuerySpecification">
+            <Select>
+              <Items>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Einsatzdatum</DimensionName>
+                    <HierarchyName>CAL_MONTH_NAME</HierarchyName>
+                    <HierarchyUniqueName>[Einsatzdatum].[CAL_MONTH_NAME]</HierarchyUniqueName>
+                    <LevelName>CAL_MONTH_NAME</LevelName>
+                    <UniqueName>[Einsatzdatum].[CAL_MONTH_NAME].[CAL_MONTH_NAME]</UniqueName>
+                  </ID>
+                  <ItemCaption>CAL_MONTH_NAME</ItemCaption>
+                </Item>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Einsatzdatum</DimensionName>
+                    <HierarchyName>CAL_MONTH_NO</HierarchyName>
+                    <HierarchyUniqueName>[Einsatzdatum].[CAL_MONTH_NO]</HierarchyUniqueName>
+                    <LevelName>CAL_MONTH_NO</LevelName>
+                    <UniqueName>[Einsatzdatum].[CAL_MONTH_NO].[CAL_MONTH_NO]</UniqueName>
+                  </ID>
+                  <ItemCaption>CAL_MONTH_NO</ItemCaption>
+                </Item>
+              </Items>
+            </Select>
+            <AutoExecute>false</AutoExecute>
+            <From>RMC-Tabular</From>
+            <Filter>
+              <FilterItems />
+            </Filter>
+            <Calculations />
+            <Aggregates />
+            <QueryProperties />
+          </QuerySpecification>
+          <Query>
+            <Statement>EVALUATE
+	SUMMARIZECOLUMNS (
+	     'Einsatzdatum'[CAL_MONTH_NAME]
+	    ,'Einsatzdatum'[CAL_MONTH_NO]	   
+	    , FILTER (
+	        VALUES ('Einsatzdatum'[CALENDAR_DATE]),
+	        ( MONTH('Einsatzdatum'[CALENDAR_DATE]) = MONTH(Today())) 
+	    )
+	)</Statement>
+            <ParameterDefinitions />
+          </Query>
+        </QueryDefinition>
+      </rd:DesignerState>
+    </Query>
+    <Fields>
+      <Field Name="Monatsname">
+        <DataField>Einsatzdatum[CAL_MONTH_NAME]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Monatsnummer">
+        <DataField>Einsatzdatum[CAL_MONTH_NO]</DataField>
+        <rd:UserDefined>true</rd:UserDefined>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

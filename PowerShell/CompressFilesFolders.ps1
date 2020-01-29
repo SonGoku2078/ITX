@@ -1,1 +1,0 @@
-﻿compress-archive -Path "C:\Users\ahau\Downloads\TEST_7_ZIP\AHAU" -DestinationPath "C:\Users\ahau\Downloads\TEST_7_ZIP\AHAU.zip"

@@ -1,0 +1,60 @@
+﻿// Changes
+// --------
+// 13.11.2019 - Basistyp hinzugefügt
+//            - Filter für Material und Basen hinzugefügt
+// 15.08.2019 - Ersterstellung
+//
+
+
+
+DEFINE
+
+Var 
+	Filter_Schliessungsdatum = FILTER(DISTINCT(Basenschliessungsdatum),Basenschliessungsdatum[CAL_DATE] = @Par_Schliessungsdatum)
+
+VAR
+	FILTER_MaterialNo 	= FILTER 	(
+						        	VALUES ( 'Material'[Materialcode] ),	        	
+						        	// Helikopter
+						        	('Material'[Materialcode] = "60" ) || ('Material'[Materialcode] = "61" ) ||
+						        	('Material'[Materialcode] = "62" ) || ('Material'[Materialcode] = "63" ) ||
+						        	('Material'[Materialcode] = "64" ) || ('Material'[Materialcode] = "65" ) ||
+						        	('Material'[Materialcode] = "66" ) || ('Material'[Materialcode] = "67" ) ||
+						        	('Material'[Materialcode] = "69" ) 
+						        	)
+						       
+VAR
+	FILTER_Basen		= FILTER 	('Basis',
+									('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "AGLL") ||
+									('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "AGLS") ||
+									('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "EBGE") ||
+									('Basis'[Basistyp]  = "Partner" && 'Basis'[Basis] = "HBES") ||
+							    	('Basis'[Basistyp] 	= "EB16/17") 		||
+									('Basis'[Basistyp] 	= "Mittelland") 	||
+									('Basis'[Basistyp] 	= "Heli Rega H125") ||					
+									('Basis'[Basistyp] 	= "Heli Rega IREOS")||					
+									('Basis'[Basistyp] 	= "Gebirgsbasis")
+							    	)
+
+
+
+EVALUATE
+SUMMARIZECOLUMNS (
+	'Basis'[Basistyp],
+	'Basis'[Basis],
+    'Basenschliessungszeit'[Schliessungszeit],
+    'Schliessungsgrund'[Schliessungsgrund],
+	 Filter_Schliessungsdatum,
+	 FILTER_MaterialNo,
+	 FILTER_Basen,	
+    "Anzahl Basenschliessungen"		, [Anzahl Basenschliessungen],
+	"Dauer Basenschliessungen HH:MM", [Dauer Basenschliessung in HH:MM]
+
+)
+
+
+<Parameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-microsoft-com:xml-analysis">  <Parameter>
+    <Name>Par_Schliessungsdatum</Name>
+    <Value xsi:type="xsd: string">2019-07-05</Value>
+  </Parameter>
+</Parameters>
