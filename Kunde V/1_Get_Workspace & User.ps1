@@ -1,4 +1,4 @@
-########################################################################################
+﻿########################################################################################
 # Author: Alexander Hauenstein, IT-Logix
 #
 # Description:
@@ -9,8 +9,8 @@
 ########################################################################################
 
 
-$password = "xxxx" | ConvertTo-SecureString -asPlainText -Force
-$username = "ahauenstein@it-logix.ch" 
+$password = "xxx" | ConvertTo-SecureString -asPlainText -Force
+$username = "xxx@it-logix.ch" 
 $credential = New-Object System.Management.Automation.PSCredential($username, $password)
 
 Connect-PowerBIServiceAccount -Credential $credential
@@ -65,3 +65,6 @@ Write-Output $OutToFile | ConvertTo-Json
 
 # write json file to disk
 set-Content -Path $Directory  -Value $OutToFile_JSON # | ConvertTo-Json 
+
+# Disconnect from PBI-Service
+Disconnect-PowerBIServiceAccount
